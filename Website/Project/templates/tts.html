@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h3 class="display-4">Text-To-Speech</h3>
+    <form action="">
+        <textarea style='resize:none;' rows=10 cols=20 class="form-control" placeholder="Enter Text Here" maxlength="100"></textarea>
+        <div class="row mt-4 ml-4">
+            <button type="button" class="btn btn-outline-info mr-4 pl-6 pr-6">Convert</button>
+            <audio controls autoplay class="ml-4">
+                <source src = "/static/" type="audio/wav">
+            </audio>
+        </div>
+    </form>
+{% endblock %}

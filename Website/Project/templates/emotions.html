@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 class="display-4">Emotion-Detection</h3>
+<form>
+    <div>
+        <label for="token_id">Token ID</label>
+        <input type="text" id='token_id'>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-outline-secondary mt-4"><span class="fas fa-upload"></span> Upload a file</button>
+        <button type="submit" class="btn btn-primary mt-4"><span></span> Submit</button>
+    </div>
+</form>
+
+<form>
+    <select id="mySelect" onchange="myFunction()" class="custom-select col-md-2 mt-4">
+      <option>Left Channel</option>
+      <option>Right Channel</option>
+    </select>
+  </form>
+{% endblock %}

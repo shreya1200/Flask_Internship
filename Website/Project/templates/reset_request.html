@@ -1,0 +1,54 @@
+{% extends 'index.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Reset Password</title>
+</head>
+<body>
+    {% block content %}
+    <style type='text/css'>
+        .box{
+            width:20rem;
+            background:transparent;
+            border:none;
+            border-bottom: 1px solid white;
+            color:white;
+        }
+        .box:focus{
+            border: none;
+            border-bottom: 1px solid #b5d9ef;
+            outline: transparent;
+        }
+    </style>
+    <header style="height:50rem;background:url('/static/assets/img/tech2.jpg')no-repeat center center;background-size:cover;">
+        <div class="overlay"></div>
+        <div class="container text-white text-center">
+            <form class="row">
+                <div class="col-xl-9 mx-auto text-light mt-5">
+                    <h1>Reset Password</h1>
+                </div>
+                <div class="col-xl-9 mx-auto text-light mt-3">
+                    {{form.email(class="box m-3",placeholder="E-mail")}}
+                </div>
+                {% if form.errors%}
+                    <div class="alert alert-danger">Please enter your E-mail</div>
+                {% endif %}
+                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto mt-4">
+                    {{form.submit(class="btn btn-md btn-outline-light")}}
+                </div>
+            </form>
+            {% with message = (get_flashed_messages())[0] %}
+                {% if message %}
+                    <div class="alert alert-success">message</div>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </header>
+    {% endblock %}
+</body>
+</html>
+
+
+

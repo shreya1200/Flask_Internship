@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Login - Anubhooti Solutions</title>
+</head>
+<body>
+    {% block content %}
+    <style type='text/css'>
+        .box{
+            width:20rem;
+            background:transparent;
+            border:none;
+            border-bottom: 1px solid white;
+            color:white;
+        }
+        .box:focus{
+            border: none;
+            border-bottom: 1px solid #b5d9ef;
+            outline: transparent;
+        }
+    </style>
+    <header style="height:50rem;background:url('/static/assets/img/tech2.jpg')no-repeat center center;background-size:cover;">
+        <div class="overlay"></div>
+        <div class="container text-white text-center">
+            <div class="row">
+                <div class="col-xl-9 mx-auto text-light mt-5">
+                    <h1>Log In</h1>
+                </div>
+                <div class="col-xl-9 mx-auto text-light mt-3">
+                    <input type="text" class="box m-3" placeholder="E-mail">
+                </div>
+                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                    <input type="password" class="box m-3" placeholder="Password">
+                </div>
+                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto mt-4">
+                    <a href="{{url_for('users.reset_request')}}">Forgot Password?</a>
+                </div>
+                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto mt-4">
+                    <button class="btn btn-md btn-outline-light">Log In</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    {% endblock %}
+</body>
+</html>
+
+
+
