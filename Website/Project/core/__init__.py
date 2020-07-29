@@ -1,0 +1,1 @@
+# we use core for including all the functionalities which universal to all the users irrespective of the subscription etc ... like index,about us,

@@ -1,20 +1,21 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField,SubmitField
-from wtforms.validators import DataRequired,Email,EqualTo
+from wtforms import StringField,PasswordField,SubmitField,IntegerField
+from wtforms.validators import DataRequired,Email,EqualTo,Length
 from wtforms import ValidationError
 from flask_login import current_user
 from Project.models import User
 
 class LoginForm(FlaskForm):
-    email = StringField('E-mail',[DataRequired('Email is required'),Email()])
-    password = PasswordField('Password',[DataRequired('Password is required')])
+    username = StringField('username',[DataRequired('Username is required')])
+    password = PasswordField('password',[DataRequired('Password is required')])
     submit = SubmitField('Log In')
 
 class RegisterForm(FlaskForm):
-    email = StringField("E-mail",[DataRequired(),Email()])
     name = StringField("First Name",[DataRequired()])
-    surname = StringField("Last Name",[DataRequired()])
-    password = PasswordField("Password",[DataRequired(),EqualTo('confirm_password')])
+    email = StringField("E-mail",[DataRequired(),Email()])
+    number = IntegerField("number",[DataRequired()])
+    username = StringField("username",[DataRequired()])
+    password = PasswordField("Password",[DataRequired(),Length(min=6, message='Select a stronger password.'),EqualTo('confirm_password', message='Passwords must match.')])
     confirm_password = PasswordField("Confirm Password",[DataRequired()])
     submit = SubmitField("Register")
 
