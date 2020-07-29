@@ -11,12 +11,11 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Log In')
 
 class RegisterForm(FlaskForm):
-    name = StringField("First Name",[DataRequired()])
-    email = StringField("E-mail",[DataRequired(),Email()])
-    number = IntegerField("number",[DataRequired()])
-    username = StringField("username",[DataRequired()])
-    password = PasswordField("Password",[DataRequired(),Length(min=6, message='Select a stronger password.'),EqualTo('confirm_password', message='Passwords must match.')])
-    confirm_password = PasswordField("Confirm Password",[DataRequired()])
+    name = StringField("First Name",[DataRequired("Name is required")])
+    email = StringField("E-mail",[DataRequired("Email is required"),Email("Please enter a valid email")])
+    number = StringField("number",[DataRequired("Phone number is required"),Length(min=10,max=10,message="Invalid phone number")])
+    password = PasswordField("Password",[DataRequired("Password cannot be empty"),Length(min=6, message='Select a stronger password.'),EqualTo('confirm_password', message='Passwords must match.')])
+    confirm_password = PasswordField("Confirm Password",[DataRequired("Please re-enter password")])
     submit = SubmitField("Register")
 
     def check_mail(self,field):

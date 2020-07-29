@@ -19,7 +19,6 @@ def register():
             name=form.name.data,
             email=form.email.data,
             number=form.number.data,
-            username=form.username.data,
             password = form.password.data,
         )
         db.session.add(user)
@@ -41,12 +40,12 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(password=form.password.data):
             login_user(user) 
             return redirect(url_for('users.index'))
         else:
-            flash('Check Email and Password')
+            flash('Incorrect email or password.')
     return render_template('login.html',form=form)
 
 

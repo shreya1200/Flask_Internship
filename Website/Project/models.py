@@ -12,7 +12,6 @@ class User(db.Model,UserMixin):
     id = db.Column(db.Integer,primary_key=True,autoincrement=True)
     name = db.Column(db.String(50))
     number = db.Column(db.Integer())
-    username = db.Column(db.String(50),unique=True)
     email = db.Column(db.String(50),unique=True,index=True)
     password_hash = db.Column(db.String(200))
 
@@ -22,11 +21,10 @@ class User(db.Model,UserMixin):
     def check_password(self,password):
         return check_password_hash(self.password_hash,password)
 
-    def __init__(self,name,number,email,username,password):
+    def __init__(self,name,number,email,password):
         self.name = name
         self.number = number
         self.email = email
-        self.username = username
         self.password_hash = generate_password_hash(password)
 
     def __repr__(self):
