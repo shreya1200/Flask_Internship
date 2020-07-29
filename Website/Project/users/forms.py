@@ -6,7 +6,7 @@ from flask_login import current_user
 from Project.models import User
 
 class LoginForm(FlaskForm):
-    username = StringField('username',[DataRequired('Username is required')])
+    email = StringField('email',[DataRequired('Email is required')])
     password = PasswordField('password',[DataRequired('Password is required')])
     submit = SubmitField('Log In')
 
