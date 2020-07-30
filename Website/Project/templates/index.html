@@ -17,8 +17,17 @@
         .navitem:hover{
             color:greenyellow;
         }
-        .mycard:hover{
+        /* .mycard:hover{
             box-shadow:0 4px 8px 0 rgba(255, 255, 255, 0.2), 0 6px 20px 0 rgba(255, 255, 255, 0.938);
+        } */
+        hr.style-one {
+            border: 0;
+            height: 1px;
+            background: #333;
+            background-image: -webkit-linear-gradient(left, #ccc, #333, #ccc);
+            background-image: -moz-linear-gradient(left, #ccc, #333, #ccc);
+            background-image: -ms-linear-gradient(left, #ccc, #333, #ccc);
+            background-image: -o-linear-gradient(left, #ccc, #333, #ccc);
         }
     </style>
     
@@ -44,82 +53,196 @@
         </div>
     </nav>
     {% block content %}
-    <header class="masthead" style="height:50rem;background:url('/static/assets/img/tech2.jpg')no-repeat center center;background-size:cover;">
+    <header class="masthead" style="height:40rem;background:url('/static/assets/img/tech2.jpg')no-repeat center center;background-size:cover;">
         <div class="overlay"></div>
         <div class="container  text-white text-center">
             <div class="row">
                 <div class="col-xl-9 mx-auto text-light">
                     <h1>Welcome to Anubhooti Solutions</h1>
-                    <p style="margin-top:4rem">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus, quos non. Blanditiis facere inventore ad corrupti nihil autem. Excepturi tempora itaque praesentium laboriosam magni minima, eius quod nihil similique quaerat?</p>
-                </div>
-                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-                    <a href="#products" style="margin-top:4rem;" class="btn btn-md btn-outline-light">Get Started</a>
+                    <p style="margin-top:4rem">
+                    <b><u>MISSION</u>  : </b>Our mission is to enhancing the business growth of our customers with creative Design and Development to deliver market-defining high-quality solutions that create value and reliable competitive advantage for our clients around the world.</p>
                 </div>
             </div>
         </div>
     </header>
-    <section class="features-icons text-center text-white" style="background-color: #0f161e;">
-        <h2 class="mb-2">Features</h2>
+    <section class=" pb-5 jumbotron" style="background-color: #0f161e;border-radius:0;margin-bottom:0;box-shadow: inset 10em 0em 8em  #94b9e471;" id="products">
+        
+        <!-- ABOUT US -->
+        <h2 class="mb-2 mt-5 text-center text-white">About Us</h2>
         <hr class="col-lg-3 bg-white mb-5" style="width:2rem;height:0.3rem;">
+        <div class="container text-light">
+            <h3><b>ANUBHOOTI SOLUTIONS</b></h3>
+            <hr class="style-one"> 
+            <br>  
+                           
+                <ul>
+                    <li>“Anubhooti solutions” is engaged in working in the area of speech processing.
+                    <li>Dr. Shaila D. Apte is a proprietor of the firm.
+                    <li>Projects completed:
+                        <ul>
+                            <li>POC for natural sounding emotional speech synthesis in English using phoneme concatenation and with minimal recording form the layman.</li>
+                        </ul>
+                    <li>Projects working on:
+                        <ul>
+                            <li>Emotion recognition useful for call centers</li>
+                            <li>Natural sounding and emotional speech synthesis in Marathi and Hindi with minimal recording from the speaker</li>
+                            <li>Speaker authentication using optimal mother wavelet</li>
+                            <li>Speech enhancement using conjugate property of DFT and wavelet Transform</li>
+                            <li>Speech disorder classification. </li>
+                        </ul>  
+                </ul>  
+                
+        </div>
+        <hr class="style-one">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-                        <div class="d-flex features-icons-icon"><i class="icon-screen-desktop m-auto text-primary" data-bs-hover-animate="pulse"></i></div>
-                        <h3>Fully Responsive</h3>
-                        <p class="lead mb-0">User our services on any device, no matter the size!</p>
+        <div class="row offset-md-0 mt-5 mb-5 pt-4 pb-5">
+            <div class="card col-md-3 ml-2 mr-4 mt-1 mycard" style="height:30rem;background-color:#b3d4fad2;; align-items: center;box-shadow:0 4px 8px 0 rgba(7, 7, 7, 0.5), 0 6px 20px 0 rgba(15, 15, 15, 0.938)">
+                <img src = "/static/assets/img/CEO_maam.png" style="width: min-content; margin-top: 30px; box-shadow: 10px 5px 5px black;">
+                <h4 class="card-title mt-5 mb-4"><u><b>Dr. Mrs. S. D. Apte</b></u></h4> 
+                <h6><b>CHIEF EXECUTIVE OFFICER</b></h6>
+                <br>
+                <h6>Anubhooti Solutions</h6>               
+            </div>
+            <div class="col-lg-8 text-light mb-5" >
+                <h3><b>CHIEF EXECUTIVE OFFICER</b> - 
+                    <b>Dr. Mrs. S. D. Apte</b></h3>  
+                    <hr class="style-one">
+                           
+                <ul>
+                    <li>Dr. Mrs. S. D. Apte completed her ME and Ph. D (Electronics Engineering) from Walchand College of Engineering, Sangli.She has professional experience of 35 years. She worked in Walchand College of Engineering for 27 years.</li>
+                    <li>She is currently working as a Professor for PG in Rajarshi Shahu College of Engineering, Pune.</li>
+                    <li>She has two Patents to her credit related to generation of mother wavelet from speech signal and emotional speech synthesis using modification of pitch contour and LPCs. </li> 
+                    <li>She has published 40 research papers in reputed International journals and over 40 papers in International conferences. 
+                    <li>Eight candidates have completed Ph.D. under her guidance and she is currently guiding 5 Ph.D. students in Pune University. 
+                    <li>She is currently working as a reviewer for International Journal of Speech Technology, Springer Publication and International Journal on Signal Processing, Elesevier Publication. 
+                    <li><b>Books titled:</b><ul>
+                        <li>“Digital Signal Processing”, “Speech and Audio Processing” and “Advanced Digital Signal Processing” is published by Wiley India Publication.</li>
+                        <li>“Signals and Systems, principles and applications” is recently published by Cambridge University press.</li>
+                        <li>“Random Signal Processing” title will be published by CRC press, Taylor and Francis series.</li>
+                    </ul>
+                    <li>Her research areas include speaker verification, speech recognition, speech synthesis, speech enhancement, watermarking of speech and music signals, handwritten character recognition etc.</li>    
+                </ul>  
+                
+            </div>
+            
+            <div class="card col-md-3 ml-2 mr-4 mt-1 mycard" style="height:25rem;background-color:#b3d4fad2;; align-items: center;box-shadow:0 4px 8px 0 rgba(7, 7, 7, 0.5), 0 6px 20px 0 rgba(15, 15, 15, 0.938)">
+                <img src = "/static/assets/img/staff.jpg" style="width: min-content; margin-top: 30px; box-shadow: 10px 5px 5px black;">
+                <h4 class="card-title mt-5 mb-4"><u><b>Mr. Shreyansh Jayani</b></u></h4> 
+                <h6><b>PRINCIPAL ENGINEER</b></h6>
+                <br>
+                <h6>Anubhooti Solutions</h6>               
+            </div>
+            <div class="col-lg-8 text-light mb-5" >
+                <h3><b>PRINCIPAL ENGINEER</b> - 
+                    <b>Mr. Shreyansh Jayani</b></h3>  
+                    <hr class="style-one">
+                <br><br>
+                <ul>
+                    <li><b>Education  :</b>      
+                    <ul><li>M.Tech from COEP </li></ul></li>
+                    <br>
+                    <li><b>Designation : </b>      
+                        <ul><li>Principal Engineer, Anubhooti Solutions. </li></ul></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+        <!-- END ABOUT US -->
+        <hr class="style-one">
+
+        <!-- FEATURES -->
+        <div class="features-icons text-center text-white" style="background-color:#294361d2; box-shadow: inset 3em 3em 8em black ,0em 0em 8em  black,0em 0em 8em  black;">
+            <h2 class="mb-2">Features</h2>
+            <hr class="col-lg-3 bg-white mb-5" style="width:2rem;height:0.3rem;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+                            <div class="d-flex features-icons-icon"><i class="icon-screen-desktop m-auto text-primary" data-bs-hover-animate="pulse"></i></div>
+                            <h3>Fully Responsive</h3>
+                            <p class="lead mb-0">User our services on any device, no matter the size!</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-                        <div class="d-flex features-icons-icon"><i class="fa fa-usd m-auto text-primary text-warning" data-bs-hover-animate="pulse"></i></div>
-                        <h3>Best Pricing</h3>
-                        <p class="lead mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                    <div class="col-lg-4">
+                        <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+                            <div class="d-flex features-icons-icon"><i class="fa fa-usd m-auto text-primary text-warning" data-bs-hover-animate="pulse"></i></div>
+                            <h3>Best Pricing</h3>
+                            <p class="lead mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-                        <div class="d-flex features-icons-icon"><i class="icon-check m-auto text-primary text-success" data-bs-hover-animate="pulse"></i></div>
-                        <h3>Easy to Use</h3>
-                        <p class="lead mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                    <div class="col-lg-4">
+                        <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+                            <div class="d-flex features-icons-icon"><i class="icon-check m-auto text-primary text-success" data-bs-hover-animate="pulse"></i></div>
+                            <h3>Easy to Use</h3>
+                            <p class="lead mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
-    
-    <section class="testimonials text-center text-white" style="background-color:#0f161e;margin-top:-2rem;">
-        <div class="container">
-            <h2 class="mb-5">What people are saying...</h2>
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                  <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                  <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                  <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                </ol>
-                <div class="carousel-inner">
-                  <div class="carousel-item active">
-                    <h1>Person 1</h1>
-                  </div>
-                  <div class="carousel-item">
-                    <h1>Person 2</h1>
-                  </div>
-                  <div class="carousel-item">
-                    <h1>Person 3</h1>
-                  </div>
-                </div>
-                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Next</span>
-                </a>
-              </div>
+        <!-- FEATURES END -->
+        <hr class="style-one">
+        <!-- OUR VALUES -->
+        <h2 class="mb-2 mt-5 text-center text-white">Our Values</h2>
+        <hr class="col-lg-3 bg-white mb-5" style="width:2rem;height:0.3rem;">
+        <div class="container text-light">
+            <hr class="style-one"> 
+            <h2><b>MISSION</b></h2>
+            <br>              
+                <ul>
+                    <li><h5>Our mission is to enhancing the business growth of our customers with creative Design and Development to deliver market-defining high-quality solutions that create value and reliable competitive advantage for our clients around the world.</h5>
+                </ul>  
+                <br>
+            <h2><b>VISION</b></h2>
+            <br>              
+                <ul>
+                    <li><h5>Our vision is to develop in a constant manner and grow as a major IT service provider to become a leading performer.</h5>
+                </ul> 
+                <hr class="style-one">   
         </div>
+        <hr class="style-one">
+        <!-- WHAT PEOPLE HAVE TO SAY -->
+        <div class="testimonials text-center text-white" style="height: 350px;background-color:#294361d2; box-shadow: inset 3em 3em 8em black ,0em 0em 8em  black,0em 0em 8em  black;" >
+            <div class="container">
+                <h2 class="mb-2 text-center text-white">What people are saying...</h2>
+                <br><br>
+                <div id="carouselExampleIndicators" class="carousel slide text-center" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                      <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                      <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                      <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    </ol>
+                    <br>
+                    <div class="carousel-inner " role="listbox">
+                      <div class="carousel-item active ">
+                        <h4>"This company is the best. I am so happy with the result!"</h4>
+                        <br><br><br>
+                      </div>
+                      <div class="carousel-item ">
+                        <h4>"One word... WOW!!"</h4>
+                        <br><br><br>
+                      </div>
+                      <div class="carousel-item ">
+                        <h4>"Could I... be any more happy with this company?"</h4>
+                        <br><br><br>
+                    </div> 
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </div>
+            </div>
+        </div>
+        <!-- WHAT PEOPLE HAVE TO SAY ENDS -->
+        <hr class="style-one">
     </section>
+    
+
     <section class="call-to-action text-center text-white" style="background-color: #0f161e;">
         <div class="overlay"></div>
         <div class="container">

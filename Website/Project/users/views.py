@@ -4,6 +4,7 @@ from Project import app,db,mail,loginmanager
 from Project.users.forms import LoginForm,RegisterForm,ResetRequestForm,PasswordResetForm
 from flask_mail import Message
 from Project.models import User
+from validate_email import validate_email
 
 
 users = Blueprint('users',__name__)
@@ -12,11 +13,13 @@ users = Blueprint('users',__name__)
 @users.route('/register',methods=['GET','POST'])
 def register():
     form = RegisterForm()
+    is_valid = validate_email(str(form.email.data),verify=True)
+    print(is_valid)
     # GET requests serve sign-up page.
     # POST requests validate form & user creation.
-    if form.validate_on_submit(): #takes the information only when the all the validators are satisfied on submit
+    if form.validate_on_submit() and is_valid==True: #takes the information only when the all the validators are satisfied on submit
         user = User(
-            name=form.name.data,
+            name=form.name.data, 
             email=form.email.data,
             number=form.number.data,
             password = form.password.data,

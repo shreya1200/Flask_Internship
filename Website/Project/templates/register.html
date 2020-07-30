@@ -56,7 +56,7 @@
                             {% endif %}
                         </div>
                         <div class="col-xl-9 mx-auto text-light mt-3">
-                            {{form.number(placeholder="Contact Number",class="box mt-3",autocomplete="off")}}
+                            {{form.number(placeholder="Contact Number",class="box mt-3",autocomplete="off",maxlength=10)}}
                             {% if form.number.errors %}
                                 {% for error in form.number.errors %}
                                     <p style="color:red;">{{error}}</p>
@@ -64,7 +64,7 @@
                             {% endif %}
                         </div>
                         <div class="col-xl-9 mx-auto text-light mt-3">
-                            {{form.password(placeholder="Password",class="box mt-3",autocomplete="off")}}
+                            {{form.password(placeholder="Password",class="box mt-3",autocomplete="off", onmouseover ="this.type='text'",onmouseout="this.type='password'",onmousemover="this.type='password'")}}
                             {% if form.password.errors %}
                                 {% for error in form.password.errors %}
                                     <p style="color:red;">{{error}}</p>
@@ -72,7 +72,7 @@
                             {% endif %}
                         </div>
                         <div class="col-xl-9 mx-auto text-light mt-3">
-                            {{form.confirm_password(placeholder="Username",class="box mt-3",autocomplete="off")}}
+                            {{form.confirm_password(placeholder="Confirm Password",class="box mt-3",autocomplete="off",onmouseover ="this.type='text'",onmouseout="this.type='password'",onmousemover="this.type='password'")}}
                             {% if form.confirm_password.errors %}
                                 {% for error in form.confirm_password.errors %}
                                     <p style="color:red;">{{error}}</p>
