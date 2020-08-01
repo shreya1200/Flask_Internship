@@ -1,0 +1,10 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <h1 style="background-color: aqua; background-color: solid;">Yo Admin</h1> 
+  <!-- <p>Admin,Naam toh suna hoga</p> -->
+
+  <!-- <button type="button" class="btn btn-primary"><a href="{{ url_for('users.logout')}}"></a>Primary</button> -->
+  <a href="{{ url_for('users.logout')}}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Log out</a>
+ 
+{% endblock %}

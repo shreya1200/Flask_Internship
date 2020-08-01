@@ -38,15 +38,24 @@ def register():
 @users.route('/login',methods=['GET','POST'])
 def login():
     # if user is logged in after sign up
+    # print(current_user)
     if current_user.is_authenticated:
         return redirect(url_for('users.index'))
-
+        
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(password=form.password.data):
             login_user(user) 
-            return redirect(url_for('users.index'))
+            if int(current_user.get_id())!=1:
+                print(current_user.get_id())
+                print(type(current_user.get_id()))
+                return redirect(url_for('users.index'))
+            else:
+                return redirect('/admin')
+                #return render_template('/admin')
+
+           # return redirect(url_for('users.index'))
         else:
             flash('Incorrect email or password.')
     return render_template('login.html',form=form)

@@ -8,6 +8,9 @@ from flask_login import LoginManager
 
 from flask_mail import Mail
 
+from flask_admin import Admin,AdminIndexView
+from flask_admin.contrib.sqla import ModelView
+# from .models import User
 
 app = Flask(__name__)
 
@@ -31,8 +34,6 @@ Migrate(app,db) #to make all the migrations to the database
 loginmanager = LoginManager()
 loginmanager.init_app(app)
 loginmanager.login_view = 'users.login'
-
-
 
 
 from Project.users.views import users

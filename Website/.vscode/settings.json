@@ -4,5 +4,6 @@
         "pylint-flask"
     ],
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.pythonPath": "c:\\Users\\shrut\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe"
 }
