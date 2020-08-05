@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
     <h3 class="display-4">Transcribe Speech</h3>
-    <form>
         <div class="col">
             <div>
                 <label for="token_id">Token ID</label>
                 <input type="text" id='token_id'>
             </div>
             <div>
-                <button class="btn btn-primary"><span class="fas fa-upload col-md-2"></span> Upload a file</button>
+                <form method="POST" action="upload" enctype=multipart/form-data>
+                    <input type="file" name="myFile" id="myFile">
+                    <button class="btn btn-primary"><span class="fas fa-upload col-md-2"></span> Upload a file</button>
+                </form>
                 <p class="mt-4">or</p>
                 <label for="mySelect">Record Audio</label>
                 <select id="mySelect" onchange="myFunction()" class="custom-select col-md-2">
@@ -17,11 +19,12 @@
                     <option>Marathi</option>
                 </select>
             </div>
+
         </div>
-    
+    <form>
         <div class="col">
             <textarea cols="100" rows="10" class="mt-4"></textarea>
             <button class="btn btn-success"><span class="fas fa-download"></span>Download Text</button>
         </div>
     </form>
-{% endblock %}
+    {% endblock %}

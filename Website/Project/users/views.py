@@ -5,7 +5,10 @@ from Project.users.forms import LoginForm,RegisterForm,ResetRequestForm,Password
 from flask_mail import Message
 from Project.models import User
 from validate_email import validate_email
-
+import os
+from mutagen.mp3 import MP3
+import werkzeug
+import soundfile as sf
 
 users = Blueprint('users',__name__)
  
@@ -99,8 +102,16 @@ def index():
 
 @users.route('/tts')
 def tts():
-    return render_template('tts.html')
-
+    #if current user is a member then redirect to the page else redirect to payment page
+    
+    if(current_user.membership=="Individual"):
+        #if member : individual
+        return render_template('tts.html', member=1)
+    elif(current_user.membership=="Institutional"):
+        #if member : institutional
+        return render_template('tts.html', member=2)
+    else:
+        return render_template('tts.html', member=0)
 
 @users.route('/transcribe')
 def transcribe():
@@ -152,3 +163,34 @@ def reset_password(token):
         return redirect(url_for('users.login'))
     return render_template('reset_password.html',form=form)
 
+
+@users.route('/upload',methods=['POST'])
+def upload():
+    if request.method == 'POST':
+        file = request.files['myFile']
+        filename = file.filename
+        a,b = os.path.splitext(filename)
+        if(b=='.mp3'):
+            audio = MP3(file)
+            duration = (audio.info.length)/60   #in mins
+        else:
+            f = sf.SoundFile(file)
+            duration = (len(f)/f.samplerate)/60 #in mins
+        
+        if(current_user.membership=='Individual'):
+            if(duration>120):
+                return render_template('payment.html')
+            else:
+                print("Upload Successful!")
+        elif(current_user.membership=='Institutional'):
+            if(duration>600):
+                return render_template('payment.html')
+            else:
+                print("Upload Successful!")
+        else:
+            if(duration>10):
+                return render_template('payment.html')
+            else:
+                print("Upload Successful!")
+    else:
+        print("Try Again!")   

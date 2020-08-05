@@ -2,7 +2,13 @@
 {% block content %}
     <h3 class="display-4">Text-To-Speech</h3>
     <form action="">
-        <textarea style='resize:none;' rows=10 cols=20 class="form-control" placeholder="Enter Text Here" maxlength="100"></textarea>
+        {% if member==0 %}
+            <textarea style='resize:none;' rows=10 cols=20 class="form-control" placeholder="Enter Text Here" maxlength="5"></textarea>
+        {% elif member==1 %}
+            <textarea style='resize:none;' rows=10 cols=20 class="form-control" placeholder="Enter Text Here" maxlength="2000"></textarea>
+        {% elif member==2 %}
+            <textarea style='resize:none;' rows=10 cols=20 class="form-control" placeholder="Enter Text Here" maxlength="10000"></textarea>
+        {% endif %}
         <div class="row mt-4 ml-4">
             <button type="button" class="btn btn-outline-info mr-4 pl-6 pr-6">Convert</button>
             <audio controls autoplay class="ml-4">
