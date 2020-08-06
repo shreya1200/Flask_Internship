@@ -9,6 +9,7 @@ import os
 from mutagen.mp3 import MP3
 import werkzeug
 import soundfile as sf
+import re
 
 users = Blueprint('users',__name__)
  
@@ -66,7 +67,7 @@ def login():
 
 @loginmanager.user_loader
 def load_user(uid):
-    # """Check if user is logged-in on every page load."""
+    # Check if user is logged-in on every page load.
     if uid is not None:
         return User.query.get(uid)
     return None
@@ -102,16 +103,8 @@ def index():
 
 @users.route('/tts')
 def tts():
-    #if current user is a member then redirect to the page else redirect to payment page
+    return render_template('tts.html')
     
-    if(current_user.membership=="Individual"):
-        #if member : individual
-        return render_template('tts.html', member=1)
-    elif(current_user.membership=="Institutional"):
-        #if member : institutional
-        return render_template('tts.html', member=2)
-    else:
-        return render_template('tts.html', member=0)
 
 @users.route('/transcribe')
 def transcribe():
@@ -181,16 +174,47 @@ def upload():
             if(duration>120):
                 return render_template('payment.html')
             else:
+                #API call
                 print("Upload Successful!")
         elif(current_user.membership=='Institutional'):
             if(duration>600):
                 return render_template('payment.html')
             else:
+                #API call
                 print("Upload Successful!")
         else:
             if(duration>10):
                 return render_template('payment.html')
             else:
+                #API call
                 print("Upload Successful!")
     else:
         print("Try Again!")   
+
+@users.route('/tts', methods=['GET', 'POST'])
+def check():
+    if request.method == 'POST':
+        text1 = request.form['textinput']
+        total_words = int(len(re.findall(r'\w+', text1)))
+
+        #if current user is a member then redirect to the page else redirect to payment page
+        if(current_user.membership=="Individual"):
+            #if member : individual
+            if(total_words<=5000):
+                #API call
+                return render_template('tts.html', input_text=text1)
+            else:
+                return render_template('payment.html')
+        elif(current_user.membership=="Institutional"):
+            #if member : institutional
+            if(total_words<=10000):
+                #API call
+                return render_template('tts.html', input_text=text1)
+            else:
+                return render_template('payment.html')
+        else:
+            if(total_words<=180):
+                #API call
+                return render_template('tts.html', input_text=text1)
+            else:
+                return render_template('payment.html')

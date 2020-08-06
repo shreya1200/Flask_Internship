@@ -1,16 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
     <h3 class="display-4">Text-To-Speech</h3>
-    <form action="">
-        {% if member==0 %}
-            <textarea style='resize:none;' rows=10 cols=20 class="form-control" placeholder="Enter Text Here" maxlength="5"></textarea>
-        {% elif member==1 %}
-            <textarea style='resize:none;' rows=10 cols=20 class="form-control" placeholder="Enter Text Here" maxlength="2000"></textarea>
-        {% elif member==2 %}
-            <textarea style='resize:none;' rows=10 cols=20 class="form-control" placeholder="Enter Text Here" maxlength="10000"></textarea>
-        {% endif %}
+    <form action="{{ url_for('users.check') }}" method="POST">
+        
+        <textarea style='resize:none;' rows=10 cols=20 class="form-control" name="textinput" placeholder="Enter Text Here">{{input_text}}</textarea>
+
         <div class="row mt-4 ml-4">
-            <button type="button" class="btn btn-outline-info mr-4 pl-6 pr-6">Convert</button>
+            <input type="submit" id="checkwords" class="btn btn-outline-info mr-4 pl-6 pr-6">Convert</button>
             <audio controls autoplay class="ml-4">
                 <source src = "/static/" type="audio/wav">
             </audio>
