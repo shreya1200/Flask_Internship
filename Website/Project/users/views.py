@@ -10,9 +10,14 @@ from mutagen.mp3 import MP3
 import werkzeug
 import soundfile as sf
 import re
+import stripe
 
 users = Blueprint('users',__name__)
  
+public = "pk_test_51HCJdAAB0pdFbVf1g2Lpev1JuHAkKSTLnJZWAJNvjcWFKXd806BRonbAilLwjMWikccDHPD67Sd1Olk9HTSbPxfK00iwPffxJP"
+secret = "sk_test_51HCJdAAB0pdFbVf1JVaOwD2N7fuV1xWEAxARMRxKzPfZkgM414AgFAY7rgPekI9X0OrOf1ZGkGkeksPaAOh3shBl00ZLIaSpdq"
+
+stripe.api_key = secret
 
 @users.route('/register',methods=['GET','POST'])
 def register():
@@ -84,18 +89,6 @@ def logout():
     logout_user()
     return redirect(url_for('core.index'))
 
-# route for our products tab
-@users.route('/products')
-def products():
-    return render_template('products.html')
-
-
-# route for pricing tab 
-@users.route('/pricing')
-def pricing():
-    return render_template('pricing.html')
-
-
 @users.route('/welcome')
 def index():
     return render_template('welcome.html')
@@ -114,12 +107,6 @@ def transcribe():
 @users.route('/emotions')
 def emotions():
     return render_template('emotions.html')
-
-# route for contactus tab 
-@users.route('/contactus')
-def contactus():
-    return render_template('contactus.html')
-
 
 def send_reset_mail(user):
     token = user.get_reset_token()
@@ -172,19 +159,19 @@ def upload():
         
         if(current_user.membership=='Individual'):
             if(duration>120):
-                return render_template('payment.html')
+                return redirect(url_for('users.subscribe'))
             else:
                 #API call
                 print("Upload Successful!")
         elif(current_user.membership=='Institutional'):
             if(duration>600):
-                return render_template('payment.html')
+                return redirect(url_for('users.subscribe'))
             else:
                 #API call
                 print("Upload Successful!")
         else:
             if(duration>10):
-                return render_template('payment.html')
+                return redirect(url_for('users.subscribe'))
             else:
                 #API call
                 print("Upload Successful!")
@@ -204,17 +191,44 @@ def check():
                 #API call
                 return render_template('tts.html', input_text=text1)
             else:
-                return render_template('payment.html')
+                return redirect(url_for('users.subscribe'))
         elif(current_user.membership=="Institutional"):
             #if member : institutional
             if(total_words<=10000):
                 #API call
                 return render_template('tts.html', input_text=text1)
             else:
-                return render_template('payment.html')
+                return redirect(url_for('users.subscribe'))
         else:
             if(total_words<=180):
                 #API call
                 return render_template('tts.html', input_text=text1)
             else:
-                return render_template('payment.html')
+                return redirect(url_for('users.subscribe'))
+
+@login_required
+@users.route('/subscribe')
+def subscribe():
+    return render_template('subscribe.html',key=public)
+
+#Transaction occurs here
+@login_required
+@users.route('/charge<int:amount>',methods=['POST'])
+def charge(amount):
+    amount = amount * 100
+    customer = stripe.Customer.create(
+        email = current_user.email,
+        source= request.form['stripeToken']
+    )
+    if amount==100000:
+        desc = "Individual Subscription"
+    else:
+        desc = "Institutional Subscription"
+    charge = stripe.Charge.create(
+        customer = customer.id,
+        amount = amount,
+        currency= "inr",
+        description=desc
+    )
+    return render_template('tts.html',amount=amount/100)
+    

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+    <style>
+        .pay{
+            background: #345bcb;
+            width:100%;
+            padding: 0.5rem;
+            color: white;
+            border: none;
+        }
+    </style>
+    <script>
+        $(function(){
+            $('.stripe-button-el').replaceWith("<button class='pay'>Proceed to Pay<i class='fa fa-arrow-right ml-3' aria-hidden='true'></i></button>")
+        });
+    </script>
+    <div class="row">
+        <div class="col-md-4 mt-2">
+            <div class="card">
+                <div class="card-header text-center" style="background-color:#345bcb;color:white;">Basic</div>
+                <div class="text-center p-4" style="font-size:2rem;">FREE</div>
+                <ul class="list-group text-center">
+                    <li class="list-group-item" style="border-radius:0;">Process upto 180 characters of text.</li>
+                    <li class="list-group-item" style="border-radius:0;">Process upto 10 minutes of audio files</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4 mt-2">
+            <div class="card">
+                <div class="card-header text-center" style="background-color:#345bcb;color:white;">Individual</div>
+                <div class="text-center p-4" style="font-size:2rem;">₹ 1000</div>
+                <ul class="list-group text-center">
+                    <li class="list-group-item" style="border-radius:0;">Process upto 2000 words of text.</li>
+                    <li class="list-group-item" style="border-radius:0;">Process upto 2 hours of audio files</li>
+                    <form action="{{url_for('users.charge',amount=1000)}}" method="post" style="padding:0;">
+                        <script 
+                            src="https://checkout.stripe.com/checkout.js" 
+                            class="stripe-button"
+                            data-key="{{ key }}"
+                            data-name="Anubhooti Solutions"
+                            data-description="Individual Subscription"
+                            data-amount="100000"
+                            data-locale="auto"
+                            data-currency="inr">
+                        </script>
+                    </form>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4 mt-2">
+            <div class="card">
+                <div class="card-header text-center" style="background-color:#345bcb;color:white;">Institutional</div>
+                <div class="text-center p-4" style="font-size:2rem;">₹ 5000</div>
+                <ul class="list-group text-center">
+                    <li class="list-group-item" style="border-radius:0;">Process upto 10,000 words of text.</li>
+                    <li class="list-group-item" style="border-radius:0;">Process upto 10 hours of audio files</li>
+                    <form action="{{url_for('users.charge',amount=5000)}}" method="post" style="padding:0;">
+                        <script 
+                            src="https://checkout.stripe.com/checkout.js" 
+                            class="stripe-button"
+                            data-key="{{ key }}"
+                            data-description="Individual Subscription"
+                            data-amount="500000"
+                            data-locale="auto"
+                            data-currency="inr"
+                            data-label="">
+                        </script>
+                    </form>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
