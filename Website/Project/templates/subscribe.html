@@ -1,19 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
-    <style>
-        .pay{
-            background: #345bcb;
-            width:100%;
-            padding: 0.5rem;
-            color: white;
-            border: none;
-        }
-    </style>
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
-        $(function(){
-            $('.stripe-button-el').replaceWith("<button class='pay'>Proceed to Pay<i class='fa fa-arrow-right ml-3' aria-hidden='true'></i></button>")
+        console.log("Sanity check")
+
+        fetch("{{url_for('users.config')}}")
+        .then((result)=>{return result.json();})
+        .then((data)=>{
+            const stripe = Stripe(data.publicKey);
+            document.querySelector("#submit-ind").addEventListener("click",()=>{
+                fetch("/charge_individual")
+                .then((result)=> { return result.json(); })
+                .then((data)=>{
+                    console.log(data);
+                    return stripe.redirectToCheckout({sessionId: data.sessionId})
+                })
+                .then((res)=>{
+                    console.log(res);
+                });
+            });
+            document.querySelector("#submit-inst").addEventListener("click",()=>{
+                fetch("/charge_institutional")
+                .then((result)=> { return result.json(); })
+                .then((data)=>{
+                    console.log(data);
+                    return stripe.redirectToCheckout({sessionId: data.sessionId})
+                })
+                .then((res)=>{
+                    console.log(res);
+                });
+            });
         });
     </script>
+
     <div class="row">
         <div class="col-md-4 mt-2">
             <div class="card">
@@ -32,18 +51,7 @@
                 <ul class="list-group text-center">
                     <li class="list-group-item" style="border-radius:0;">Process upto 2000 words of text.</li>
                     <li class="list-group-item" style="border-radius:0;">Process upto 2 hours of audio files</li>
-                    <form action="{{url_for('users.charge',amount=1000)}}" method="post" style="padding:0;">
-                        <script 
-                            src="https://checkout.stripe.com/checkout.js" 
-                            class="stripe-button"
-                            data-key="{{ key }}"
-                            data-name="Anubhooti Solutions"
-                            data-description="Individual Subscription"
-                            data-amount="100000"
-                            data-locale="auto"
-                            data-currency="inr">
-                        </script>
-                    </form>
+                    <button class="button is-primary btn btn-outline-dark mt-5" id="submit-ind">Proceed to Pay</button>
                 </ul>
             </div>
         </div>
@@ -54,18 +62,7 @@
                 <ul class="list-group text-center">
                     <li class="list-group-item" style="border-radius:0;">Process upto 10,000 words of text.</li>
                     <li class="list-group-item" style="border-radius:0;">Process upto 10 hours of audio files</li>
-                    <form action="{{url_for('users.charge',amount=5000)}}" method="post" style="padding:0;">
-                        <script 
-                            src="https://checkout.stripe.com/checkout.js" 
-                            class="stripe-button"
-                            data-key="{{ key }}"
-                            data-description="Individual Subscription"
-                            data-amount="500000"
-                            data-locale="auto"
-                            data-currency="inr"
-                            data-label="">
-                        </script>
-                    </form>
+                    <button class="button is-primary btn btn-outline-dark mt-5" id="submit-inst">Proceed to Pay</button>
                 </ul>
             </div>
         </div>

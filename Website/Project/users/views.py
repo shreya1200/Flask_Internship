@@ -1,4 +1,4 @@
-from flask import flash,render_template,url_for,Blueprint,redirect,request,session,logging
+from flask import flash,render_template,url_for,Blueprint,redirect,request,session,logging,jsonify
 from flask_login import current_user,login_user,logout_user,login_required, login_manager,UserMixin
 from Project import app,db,mail,loginmanager
 from Project.users.forms import LoginForm,RegisterForm,ResetRequestForm,PasswordResetForm
@@ -206,29 +206,65 @@ def check():
             else:
                 return redirect(url_for('users.subscribe'))
 
-@login_required
 @users.route('/subscribe')
 def subscribe():
-    return render_template('subscribe.html',key=public)
+    return render_template('subscribe.html')
 
-#Transaction occurs here
-@login_required
-@users.route('/charge<int:amount>',methods=['POST'])
-def charge(amount):
-    amount = amount * 100
-    customer = stripe.Customer.create(
-        email = current_user.email,
-        source= request.form['stripeToken']
-    )
-    if amount==100000:
-        desc = "Individual Subscription"
-    else:
-        desc = "Institutional Subscription"
-    charge = stripe.Charge.create(
-        customer = customer.id,
-        amount = amount,
-        currency= "inr",
-        description=desc
-    )
-    return render_template('tts.html',amount=amount/100)
+@users.route("/config")
+def config():
+    stripe_config = {"publicKey": public}
+    return jsonify(stripe_config)
+
+@users.route('/charge_individual')
+def charge_individual():
+    domainUrl = "http://localhost:5000/"
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            success_url = domainUrl + "success?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url = domainUrl + "cancelled",
+            payment_method_types = ['card'],
+            mode = "payment",
+            line_items = [
+                {
+                    "name": "Test Payment",
+                    "currency": "inr",
+                    "amount": "100000",
+                    "quantity": 1
+                }
+            ]
+        )
+        return jsonify({"sessionId":checkout_session["id"]})
+    except Exception as e:
+        return jsonify(error=str(e)), 403
+
+@users.route('/charge_institutional')
+def charge_institutional():
+    domainUrl = "http://localhost:5000/"
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            success_url = domainUrl + "success?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url = domainUrl + "cancelled",
+            payment_method_types = ['card'],
+            mode = "payment",
+            line_items = [
+                {
+                    "name": "Test Payment",
+                    "currency": "inr",
+                    "amount": "500000",
+                    "quantity": 1
+                }
+            ]
+        )
+        return jsonify({"sessionId":checkout_session["id"]})
+    except Exception as e:
+        return jsonify(error=str(e)), 403
+
+@users.route('/success')
+def success():
+    return render_template('success.html')
+
+@users.route('/cancelled')
+def cancelled():
+    return render_template('failed.html')
+
     
