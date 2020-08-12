@@ -3,14 +3,16 @@ from flask_login import current_user,login_user,logout_user,login_required, logi
 from Project import app,db,mail,loginmanager
 from Project.users.forms import LoginForm,RegisterForm,ResetRequestForm,PasswordResetForm
 from flask_mail import Message
-from Project.models import User
+from Project.models import User,Activity
 from validate_email import validate_email
 import os
 from mutagen.mp3 import MP3
 import werkzeug
+from werkzeug.utils import secure_filename
 import soundfile as sf
 import re
 import stripe
+from datetime import datetime
 
 users = Blueprint('users',__name__)
  
@@ -149,6 +151,8 @@ def upload():
     if request.method == 'POST':
         file = request.files['myFile']
         filename = file.filename
+        #file.save(filename) #in project_root
+        file.save(os.path.join(app.config['upload_folder'], secure_filename(f.filename)))
         a,b = os.path.splitext(filename)
         if(b=='.mp3'):
             audio = MP3(file)
@@ -158,22 +162,64 @@ def upload():
             duration = (len(f)/f.samplerate)/60 #in mins
         
         if(current_user.membership=='Individual'):
-            if(duration>120):
+            if(duration>current_user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
                 #API call
+                
+                act = Activity(
+                    user = current_user.id,
+                    time = datetime.utcnow(),
+                    activity = 'transcribe speech'
+                    #input = link
+                    #output = link
+                )
+                db.session.add(act)
+                db.session.commit()
+
+                user1 = User.query.all()
+                user1.time_left = (current_user.time_left-duration)
+                db.session.commit()
                 print("Upload Successful!")
         elif(current_user.membership=='Institutional'):
-            if(duration>600):
+            if(duration>current_user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
                 #API call
+                act = Activity(
+                    user = current_user.id,
+                    time = datetime.utcnow(),
+                    activity = 'transcribe speech'
+                    #input = link
+                    #output = link
+                )
+                db.session.add(act)
+                db.session.commit()
+
+                user1 = User.query.all()
+                user1.time_left = (current_user.time_left-duration)
+                db.session.commit()
+
                 print("Upload Successful!")
         else:
-            if(duration>10):
+            if(duration>current_user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
                 #API call
+                act = Activity(
+                    user = current_user.id,
+                    time = datetime.utcnow(),
+                    activity = 'transcribe speech'
+                    #input = link
+                    #output = link
+                )
+                db.session.add(act)
+                db.session.commit()
+                
+                user1 = User.query.all()
+                user1.time_left = (current_user.time_left-duration)
+                db.session.commit()
+
                 print("Upload Successful!")
     else:
         print("Try Again!")   
@@ -182,26 +228,75 @@ def upload():
 def check():
     if request.method == 'POST':
         text1 = request.form['textinput']
+
+        f = open("upload_folder/myfile.txt", "x")
+        f.write(text1)
+        f.close()
+
         total_words = int(len(re.findall(r'\w+', text1)))
 
         #if current user is a member then redirect to the page else redirect to payment page
         if(current_user.membership=="Individual"):
             #if member : individual
-            if(total_words<=5000):
-                #API call
+            if(total_words<=current_user.words_left):
+
+                act = Activity(
+                    user = current_user.id,
+                    time = datetime.utcnow(),
+                    activity = 'text to speech'
+                    #input = link
+                    #output = link
+                )
+                db.session.add(act)
+                db.session.commit()
+
+                user1 = User.query.all()
+                user1.words_left = (current_user.words_left-total_words)
+                db.session.commit()
+
                 return render_template('tts.html', input_text=text1)
             else:
                 return redirect(url_for('users.subscribe'))
         elif(current_user.membership=="Institutional"):
             #if member : institutional
-            if(total_words<=10000):
+            if(total_words<=current_user.words_left):
                 #API call
+
+                act = Activity(
+                    user = current_user.id,
+                    time = datetime.utcnow(),
+                    activity = 'text to speech'
+                    #input = link
+                    #output = link
+                )
+                db.session.add(act)
+                db.session.commit()
+
+                user1 = User.query.all()
+                user1.words_left = (current_user.words_left-total_words)
+                db.session.commit()
+
                 return render_template('tts.html', input_text=text1)
             else:
                 return redirect(url_for('users.subscribe'))
         else:
-            if(total_words<=180):
+            if(total_words<=current_user.words_left):
                 #API call
+
+                act = Activity(
+                    user = current_user.id,
+                    time = datetime.utcnow(),
+                    activity = 'text to speech'
+                    #input = link
+                    #output = link
+                )
+                db.session.add(act)
+                db.session.commit()
+
+                user1 = User.query.all()
+                user1.words_left = (current_user.words_left-total_words)
+                db.session.commit()
+
                 return render_template('tts.html', input_text=text1)
             else:
                 return redirect(url_for('users.subscribe'))
