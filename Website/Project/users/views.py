@@ -28,12 +28,16 @@ def register():
     print(is_valid)
     # GET requests serve sign-up page.
     # POST requests validate form & user creation.
-    if form.validate_on_submit() and is_valid==True: #takes the information only when the all the validators are satisfied on submit
+    if form.validate_on_submit(): #takes the information only when the all the validators are satisfied on submit
         user = User(
             name=form.name.data, 
             email=form.email.data,
             number=form.number.data,
             password = form.password.data,
+            membership= "FREE",
+            subscription_validity=0,
+            time_left= 0,
+            words_left= 0
         )
         db.session.add(user)
         db.session.commit()  # Create new user
@@ -328,6 +332,8 @@ def charge_individual():
                 }
             ]
         )
+        global amount_paid
+        amount_paid = 1
         return jsonify({"sessionId":checkout_session["id"]})
     except Exception as e:
         return jsonify(error=str(e)), 403
@@ -350,12 +356,22 @@ def charge_institutional():
                 }
             ]
         )
+        global amount_paid
+        amount_paid = 5
         return jsonify({"sessionId":checkout_session["id"]})
     except Exception as e:
         return jsonify(error=str(e)), 403
 
-@users.route('/success')
+@users.route('/success',methods=['GET'])
+@login_required
 def success():
+    user = User.query.get(current_user.id)
+    if amount_paid == 1:
+        user.membership = "Individual"
+    if amount_paid == 5:
+        user.membership = "Institutional"
+    db.session.commit()
+        
     return render_template('success.html')
 
 @users.route('/cancelled')
