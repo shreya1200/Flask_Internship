@@ -14,6 +14,7 @@ import re
 import stripe
 from datetime import datetime
 import pathlib
+from flask_http_response import success, result, error
 
 
 users = Blueprint('users',__name__)
@@ -167,9 +168,11 @@ def upload():
         print("Hiiii" + create_file)
         print(my_path)
 
+        #my_path = my_path + str('\create_file')
+        print(my_path)
 
-        #file.save(my_path, secure_filename(filename))
-        file.save(r"D:/upload_folder", secure_filename(filename))
+        file.save(os.path.join(my_path, secure_filename(filename)))
+        #file.save(r"D:/upload_folder", secure_filename(filename))
         a,b = os.path.splitext(filename)
         user = User.query.get(current_user.get_id())
         if(b=='.mp3'):
@@ -188,13 +191,13 @@ def upload():
                 act = Activity(
                     time = datetime.utcnow(),
                     activity = 'transcribe speech',
-                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder\\' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
 
-                user.words_left = (user.words_left-total_words)
+                user.time_left = (user.time_left-duration)
                 db.session.commit()
                 print("Upload Successful!")
         elif(user.membership=='Institutional'):
@@ -205,13 +208,13 @@ def upload():
                 act = Activity(
                     time = datetime.utcnow(),
                     activity = 'transcribe speech',
-                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder\\' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
 
-                user.words_left = (user.words_left-total_words)
+                user.time_left = (user.time_left-duration)
                 db.session.commit()
 
                 print("Upload Successful!")
@@ -223,16 +226,18 @@ def upload():
                 act = Activity(
                     time = datetime.utcnow(),
                     activity = 'transcribe speech',
-                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder\\' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
                 
-                user.words_left = (user.words_left-total_words)
+                user.time_left = (user.time_left-duration)
                 db.session.commit()
 
                 print("Upload Successful!")
+                return success.return_response(message='Successfully Completed', status=200)
+
     else:
         print("Try Again!")   
 
