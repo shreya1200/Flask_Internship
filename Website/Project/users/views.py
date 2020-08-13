@@ -13,6 +13,8 @@ import soundfile as sf
 import re
 import stripe
 from datetime import datetime
+import pathlib
+
 
 users = Blueprint('users',__name__)
  
@@ -36,8 +38,8 @@ def register():
             password = form.password.data,
             membership= "FREE",
             subscription_validity=0,
-            time_left= 0,
-            words_left= 0
+            time_left= 10,
+            words_left= 180
         )
         db.session.add(user)
         db.session.commit()  # Create new user
@@ -154,9 +156,20 @@ def reset_password(token):
 def upload():
     if request.method == 'POST':
         file = request.files['myFile']
-        filename = file.filename
-        #file.save(filename) #in project_root
-        file.save(os.path.join(app.config['upload_folder'], secure_filename(f.filename)))
+        my_path = str(pathlib.Path().absolute()) + '\\upload_folder'
+
+        list = os.listdir(my_path) # dir
+        number_files = len(list)
+        number_files = str(number_files+1)
+        filename = "audio_" + str(current_user.id)+number_files + "_" + file.filename 
+        create_file = filename
+
+        print("Hiiii" + create_file)
+        print(my_path)
+
+
+        #file.save(my_path, secure_filename(filename))
+        file.save(r"D:/upload_folder", secure_filename(filename))
         a,b = os.path.splitext(filename)
         user = User.query.get(current_user.get_id())
         if(b=='.mp3'):
@@ -170,14 +183,13 @@ def upload():
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
-                #API call
+                #API call transcribe speech
                 
                 act = Activity(
-                    user = user.id,
                     time = datetime.utcnow(),
-                    activity = 'transcribe speech'
-                    #input = link
-                    #output = link
+                    activity = 'transcribe speech',
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
@@ -189,13 +201,12 @@ def upload():
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
-                #API call
+                #API call transcribe speech
                 act = Activity(
-                    user = user.id,
                     time = datetime.utcnow(),
-                    activity = 'transcribe speech'
-                    #input = link
-                    #output = link
+                    activity = 'transcribe speech',
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
@@ -208,13 +219,12 @@ def upload():
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
-                #API call
+                #API call transcribe speech
                 act = Activity(
-                    user = user.id,
                     time = datetime.utcnow(),
-                    activity = 'transcribe speech'
-                    #input = link
-                    #output = link
+                    activity = 'transcribe speech',
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
@@ -232,8 +242,16 @@ def check():
     user = User.query.get(current_user.get_id())
     if request.method == 'POST':
         text1 = request.form['textinput']
+        my_path = str(pathlib.Path().absolute()) + '\\upload_folder'
+        list = os.listdir(my_path) # dir
+        number_files = len(list)
+        number_files = str(number_files+1)
+        create_file = "upload_folder/file_"+str(current_user.id)+number_files+".txt"
 
-        f = open("upload_folder/myfile.txt", "x")
+        print("Hiiii" + create_file)
+        print(my_path)
+        
+        f = open(create_file, "x")
         f.write(text1)
         f.close()
 
@@ -245,11 +263,10 @@ def check():
             if(total_words<=current_user.words_left):
 
                 act = Activity(
-                    user = current_user.get_id(),
                     time = datetime.utcnow(),
-                    activity = 'text to speech'
-                    #input = link
-                    #output = link
+                    activity = 'text to speech',
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
@@ -263,14 +280,13 @@ def check():
         elif(current_user.membership=="Institutional"):
             #if member : institutional
             if(total_words<=current_user.words_left):
-                #API call
+                #API call tts
 
                 act = Activity(
-                    user = current_user.get_id(),
                     time = datetime.utcnow(),
-                    activity = 'text to speech'
-                    #input = link
-                    #output = link
+                    activity = 'text to speech',
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
@@ -283,14 +299,13 @@ def check():
                 return redirect(url_for('users.subscribe'))
         else:
             if(total_words<=current_user.words_left):
-                #API call
+                #API call tts
 
                 act = Activity(
-                    user = current_user.get_id(),
                     time = datetime.utcnow(),
-                    activity = 'text to speech'
-                    #input = link
-                    #output = link
+                    activity = 'text to speech',
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
@@ -367,11 +382,19 @@ def success():
     amount = 0
     if session["amount_total"] == 100000:
         mtype = "Individual Subscription"
+        user.membership = 'Individual'
+        user.time_left = 120
+        user.words_left = 2000
         amount = 1000
     if session["amount_total"] == 500000:
         mtype = "Institutional Subscription"
+        user.membership = 'Institutional'
+        user.time_left = 600
+        user.words_left = 5000
         amount = 5000
+
     time = datetime.now()
+    db.session.commit()
     return render_template('success.html',user=user,session=session,time=time,mtype=mtype,amount=amount)
 
 @users.route('/cancelled')
