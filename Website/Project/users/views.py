@@ -158,6 +158,7 @@ def upload():
         #file.save(filename) #in project_root
         file.save(os.path.join(app.config['upload_folder'], secure_filename(f.filename)))
         a,b = os.path.splitext(filename)
+        user = User.query.get(current_user.get_id())
         if(b=='.mp3'):
             audio = MP3(file)
             duration = (audio.info.length)/60   #in mins
@@ -165,14 +166,14 @@ def upload():
             f = sf.SoundFile(file)
             duration = (len(f)/f.samplerate)/60 #in mins
         
-        if(current_user.membership=='Individual'):
-            if(duration>current_user.time_left):
+        if(user.membership=='Individual'):
+            if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
                 #API call
                 
                 act = Activity(
-                    user = current_user.id,
+                    user = user.id,
                     time = datetime.utcnow(),
                     activity = 'transcribe speech'
                     #input = link
@@ -181,17 +182,16 @@ def upload():
                 db.session.add(act)
                 db.session.commit()
 
-                user1 = User.query.all()
-                user1.time_left = (current_user.time_left-duration)
+                user.words_left = (user.words_left-total_words)
                 db.session.commit()
                 print("Upload Successful!")
-        elif(current_user.membership=='Institutional'):
-            if(duration>current_user.time_left):
+        elif(user.membership=='Institutional'):
+            if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
                 #API call
                 act = Activity(
-                    user = current_user.id,
+                    user = user.id,
                     time = datetime.utcnow(),
                     activity = 'transcribe speech'
                     #input = link
@@ -200,18 +200,17 @@ def upload():
                 db.session.add(act)
                 db.session.commit()
 
-                user1 = User.query.all()
-                user1.time_left = (current_user.time_left-duration)
+                user.words_left = (user.words_left-total_words)
                 db.session.commit()
 
                 print("Upload Successful!")
         else:
-            if(duration>current_user.time_left):
+            if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
                 #API call
                 act = Activity(
-                    user = current_user.id,
+                    user = user.id,
                     time = datetime.utcnow(),
                     activity = 'transcribe speech'
                     #input = link
@@ -220,16 +219,17 @@ def upload():
                 db.session.add(act)
                 db.session.commit()
                 
-                user1 = User.query.all()
-                user1.time_left = (current_user.time_left-duration)
+                user.words_left = (user.words_left-total_words)
                 db.session.commit()
 
                 print("Upload Successful!")
     else:
         print("Try Again!")   
 
+@login_required
 @users.route('/tts', methods=['GET', 'POST'])
 def check():
+    user = User.query.get(current_user.get_id())
     if request.method == 'POST':
         text1 = request.form['textinput']
 
@@ -240,12 +240,12 @@ def check():
         total_words = int(len(re.findall(r'\w+', text1)))
 
         #if current user is a member then redirect to the page else redirect to payment page
-        if(current_user.membership=="Individual"):
+        if(user.membership=="Individual"):
             #if member : individual
             if(total_words<=current_user.words_left):
 
                 act = Activity(
-                    user = current_user.id,
+                    user = current_user.get_id(),
                     time = datetime.utcnow(),
                     activity = 'text to speech'
                     #input = link
@@ -254,8 +254,7 @@ def check():
                 db.session.add(act)
                 db.session.commit()
 
-                user1 = User.query.all()
-                user1.words_left = (current_user.words_left-total_words)
+                user.words_left = (user.words_left-total_words)
                 db.session.commit()
 
                 return render_template('tts.html', input_text=text1)
@@ -267,7 +266,7 @@ def check():
                 #API call
 
                 act = Activity(
-                    user = current_user.id,
+                    user = current_user.get_id(),
                     time = datetime.utcnow(),
                     activity = 'text to speech'
                     #input = link
@@ -276,8 +275,7 @@ def check():
                 db.session.add(act)
                 db.session.commit()
 
-                user1 = User.query.all()
-                user1.words_left = (current_user.words_left-total_words)
+                user.words_left = (user.words_left-total_words)
                 db.session.commit()
 
                 return render_template('tts.html', input_text=text1)
@@ -288,7 +286,7 @@ def check():
                 #API call
 
                 act = Activity(
-                    user = current_user.id,
+                    user = current_user.get_id(),
                     time = datetime.utcnow(),
                     activity = 'text to speech'
                     #input = link
@@ -297,8 +295,7 @@ def check():
                 db.session.add(act)
                 db.session.commit()
 
-                user1 = User.query.all()
-                user1.words_left = (current_user.words_left-total_words)
+                user.words_left = (user.words_left-total_words)
                 db.session.commit()
 
                 return render_template('tts.html', input_text=text1)
@@ -332,8 +329,8 @@ def charge_individual():
                 }
             ]
         )
-        global amount_paid
-        amount_paid = 1
+        global session_id 
+        session_id = checkout_session["id"]
         return jsonify({"sessionId":checkout_session["id"]})
     except Exception as e:
         return jsonify(error=str(e)), 403
@@ -356,23 +353,26 @@ def charge_institutional():
                 }
             ]
         )
-        global amount_paid
-        amount_paid = 5
+        global session_id 
+        session_id = checkout_session["id"]
         return jsonify({"sessionId":checkout_session["id"]})
     except Exception as e:
         return jsonify(error=str(e)), 403
 
 @users.route('/success',methods=['GET'])
-@login_required
 def success():
-    user = User.query.get(current_user.id)
-    if amount_paid == 1:
-        user.membership = "Individual"
-    if amount_paid == 5:
-        user.membership = "Institutional"
-    db.session.commit()
-        
-    return render_template('success.html')
+    user = User.query.get(current_user.get_id())
+    session = stripe.checkout.Session.retrieve(session_id)
+    mtype = ""
+    amount = 0
+    if session["amount_total"] == 100000:
+        mtype = "Individual Subscription"
+        amount = 1000
+    if session["amount_total"] == 500000:
+        mtype = "Institutional Subscription"
+        amount = 5000
+    time = datetime.now()
+    return render_template('success.html',user=user,session=session,time=time,mtype=mtype,amount=amount)
 
 @users.route('/cancelled')
 def cancelled():

@@ -1,6 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
-    <h1>Congrats. Test Successful!</h1>
+<style>
+    .listitem{
+        border:0;
+    }
+</style>
+<div class="container mb-4">
+    <div class="text-center col-md-10">
+        <div class="alert alert-info row" style="border-radius: 0;">
+            <i class="fa fa-check-circle" style="font-size: 1.5rem;" aria-hidden="true"></i>
+            <h6 class="ml-2" style="margin-top:0.11rem;">Payment successful</h6>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <ul class="list-group" style="border:2px solid #345bcb;">
+                <li class="list-group-item listitem" style="border-radius:0;border-bottom: 1px solid #345bcb;color:white;background-color:#345bcb ;">Transaction Summary: </li>
+                <li class="list-group-item listitem">Ref Id: <span style="float:right;word-wrap:break-word;min-width:auto;max-width:20rem;">{{session["id"]}}</span></li>
+                <li class="list-group-item listitem">Date: <span style="float:right;">{{time.day}}/{{time.month}}/{{time.year}}</span></li>
+                <li class="list-group-item listitem">Time: <span style="float:right;">{{time.hour}}:{{time.minute}}</span></li>
+            </ul>
+            <ul class="list-group" style="border:2px solid #345bcb;">
+                <li class="list-group-item listitem" style="border-radius:0;border-bottom: 1px solid #345bcb;color:white;background-color:#345bcb ;">Order Summary: </li>
+                <li class="list-group-item listitem">Name <span style="float:right;">{{user.name}}</span></li>
+                <li class="list-group-item listitem">Email<span style="float:right;">{{user.email}}</span></li>
+                <li class="list-group-item listitem">Product:<span style="float:right;">{{mtype}}</span></li>
+                <li class="list-group-item listitem" style="border-top:1px solid #345bcb;">Amount:<span style="float:right;">₹{{amount}}</span></li>
+            </ul>
+        </div>
+    </div>
 </div>
 {% endblock %}
