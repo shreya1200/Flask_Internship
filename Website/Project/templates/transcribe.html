@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
     <h4 class="mt-4 mb-4">Transcribe Speech</h4>
+    {% if error %}
+    <div class="alert alert-danger" style="width: 18rem;">
+        <h5 style="color: red;">Error Uploading File!</h5>
+    </div>
+    {% endif %}
         <div class="col">
             <div class="mb-4">
                 <label for="token_id">Token ID</label>
