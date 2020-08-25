@@ -17,7 +17,7 @@
 
 <body id="page-top">
     <div id="wrapper">
-        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background-color:  #0f161e;;" >
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion p-0" style="background-color:  #0b8abc;" >
             <div class="container-fluid d-flex flex-column p-0">
                 <a href="{{url_for('users.index')}}"><img class="col mt-3" src="{{url_for('static',filename='assets/img/logo.png')}}" style="height:2rem;width:4rem;"></a>
                 <hr class="sidebar-divider my-0">
@@ -35,20 +35,20 @@
             </div>
         </nav>
         <div class="d-flex flex-column" id="content-wrapper">
-            <nav class="navbar" style="background-color: #325ee4;">
+            <nav class="navbar" style="color:black;border-bottom: 0.5px solid black;">
                 <div class="navbar-brand">
                     <div class="row">
-                        <h3 class="col mt-2 mb-0" style="font-family: 'Nunito', sans-serif;color:white;height:3rem;font-size:1.5rem;">ANUBHOOTI SOLUTIONS</h3>    
+                        <h3 class="col mt-2 mb-0" style="font-family: 'Nunito', sans-serif;height:3rem;font-size:1.5rem;">ANUBHOOTI SOLUTIONS</h3>    
                     </div>
                 </div>
             </nav>
-            <div id="content" class="ml-4 mr-4 pt-3">
+            <div id="content" class="pl-4 pt-3 pr-4">
                 {% block content %}
                 
                 {% endblock %}
             </div>
 
-            <footer class="bg-white sticky-footer">
+            <footer class="sticky-footer">
                 <div class="container my-auto">
                     <div class="text-center my-auto copyright"><span>Copyright © Anubhooti Solutions 2020</span></div>
                 </div>

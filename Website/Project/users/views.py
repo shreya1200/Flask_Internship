@@ -376,7 +376,7 @@ def charge_institutional():
 
 @users.route('/success',methods=['GET'])
 def success():
-    user = User.query.get(current_user.id)
+    user = User.query.get()
     print(type(user))
     session = stripe.checkout.Session.retrieve(session_id)
     amount = 0

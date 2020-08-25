@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+    .mybutton:hover{
+        background-color:#4aacd3 !important;
+    }
+</style>
 <div class="row">
-    <div class="col-sm-4 mt-4 mr-2 card">
+    <div class="col-md-4 mt-4 mr-2 card">
         <div class="row">
             <h3 class="mt-4 mb-4 ml-4">Subscription</h3>
             <i class="fa fa-credit-card fa-2x mt-4 mb-4 ml-4" style="color:rgb(46, 46, 121);" aria-hidden="true"></i>
@@ -13,11 +18,11 @@
             {% if user.membership !='FREE' %}
             <li class="list-group-item" style="border:0;">Validity: 30 days</li>
             {% else %}
-            <a href="{{url_for('users.subscribe')}}" class="btn btn-md btn-primary m-auto">Subscribe</a>
+            <a href="{{url_for('users.subscribe')}}" class="btn btn-md m-auto mybutton" style="background-color: #0b8abc;color:white;">Subscribe</a>
             {% endif %}
         </ul>
     </div>
-    <div class="col-sm-4 mt-4 card">
+    <div class="col-md-4 mt-4 card">
         <div class="row">
             <h3 class="mt-4 mb-4 ml-4">Account</h3>
             <i class="fa fa-user-o fa-2x mt-4 mb-4 ml-4" style="color:rgb(46, 46, 121);" aria-hidden="true"></i>
