@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .box{
+        border: none;
+        border-bottom: 1px solid black;
+        background: transparent;
+    }
+    .box:focus{
+        border: none;
+        border-bottom: 1px solid #325ee4;
+        outline: none;
+    }
+</style>
+<form method="POST">
+    {{form.hidden_tag()}}
+    <div class="row m-4">
+        <label for="#name" class="mt-1 col-sm-1 mr-3">Name</label>
+        <div id="name" class=col-md>{{form.name(class="box",style="width:15rem;")}}</div>
+    </div>
+    <div class="row m-4">
+        <label for="#num" class="mt-1 col-sm-1 mr-3">Number</label>
+        <div id="num" class="col-md">{{form.number(class="box",style="width:15rem;")}}</div>
+    </div>
+    {{form.submit(class="btn btn-md btn-outline-primary ml-4 mt-4")}}
+    {% if success %}
+    <div class="alert alert-success" style="width:18rem;margin-top:3rem;margin-left:3rem;">
+        Information changed successfully!
+    </div>
+    {% endif %}
+</form>
+{% endblock %}

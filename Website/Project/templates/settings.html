@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<ul class="list-group">
+    <li class="list-group-item"><a href="{{url_for('users.about')}}" class="btn">Change Name/Phone number</a></li>
+    <li class="list-group-item"><a href="{{url_for('users.password')}}" class="btn">Change Password</a></li>
+</ul>
+{% endblock %}

@@ -1,10 +1,9 @@
 from flask import flash,render_template,url_for,Blueprint,redirect,request,session,logging,jsonify
 from flask_login import current_user,login_user,logout_user,login_required, login_manager,UserMixin
 from Project import app,db,mail,loginmanager
-from Project.users.forms import LoginForm,RegisterForm,ResetRequestForm,PasswordResetForm
+from Project.users.forms import LoginForm,RegisterForm,ResetRequestForm,PasswordResetForm,UpdateInfo,ChangePassword
 from flask_mail import Message
 from Project.models import User,Activity
-from validate_email import validate_email
 import os
 from mutagen.mp3 import MP3
 import werkzeug
@@ -12,9 +11,8 @@ from werkzeug.utils import secure_filename
 import soundfile as sf
 import re
 import stripe
-from datetime import datetime
+from datetime import datetime,timedelta
 import pathlib
-from flask_http_response import success, result, error
 
 
 users = Blueprint('users',__name__)
@@ -27,8 +25,6 @@ stripe.api_key = secret
 @users.route('/register',methods=['GET','POST'])
 def register():
     form = RegisterForm()
-    is_valid = validate_email(str(form.email.data),verify=True)
-    print(is_valid)
     # GET requests serve sign-up page.
     # POST requests validate form & user creation.
     if form.validate_on_submit(): #takes the information only when the all the validators are satisfied on submit
@@ -37,8 +33,6 @@ def register():
             email=form.email.data,
             number=form.number.data,
             password = form.password.data,
-            membership= "FREE",
-            subscription_validity=0,
             time_left= 10,
             words_left= 180
         )
@@ -65,12 +59,11 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(password=form.password.data):
             login_user(user) 
-            if int(current_user.get_id())!=1:
-                print(current_user.get_id())
-                print(type(current_user.get_id()))
-                return redirect(url_for('users.index'))
-            else:
+            if user.account_type == 'admin':
                 return redirect('/admin')
+            else:
+                return redirect(url_for('users.index'))
+                
                 #return render_template('/admin')
 
            # return redirect(url_for('users.index'))
@@ -100,7 +93,12 @@ def logout():
 
 @users.route('/welcome')
 def index():
-    return render_template('welcome.html')
+    user = User.query.get(current_user.id)
+    time = datetime.now()
+    if (time - user.subscription_time) > timedelta(days=30):
+        user.membership = 'FREE'
+        db.session.commit()
+    return render_template('welcome.html',user=user)
 
 
 @users.route('/tts')
@@ -159,8 +157,8 @@ def upload():
         file = request.files['myFile']
         my_path = str(pathlib.Path().absolute()) + '\\upload_folder'
 
-        list = os.listdir(my_path) # dir
-        number_files = len(list)
+        mylist = os.listdir(my_path) # dir
+        number_files = len(mylist)
         number_files = str(number_files+1)
         filename = "audio_" + str(current_user.id)+number_files + "_" + file.filename 
         create_file = filename
@@ -168,13 +166,11 @@ def upload():
         print("Hiiii" + create_file)
         print(my_path)
 
-        #my_path = my_path + str('\create_file')
-        print(my_path)
 
-        file.save(os.path.join(my_path, secure_filename(filename)))
-        #file.save(r"D:/upload_folder", secure_filename(filename))
+        #file.save(my_path, secure_filename(filename))
+        file.save("/upload_folder/", secure_filename(filename))
         a,b = os.path.splitext(filename)
-        user = User.query.get(current_user.get_id())
+        user = User.query.get(current_user.id)
         if(b=='.mp3'):
             audio = MP3(file)
             duration = (audio.info.length)/60   #in mins
@@ -191,13 +187,13 @@ def upload():
                 act = Activity(
                     time = datetime.utcnow(),
                     activity = 'transcribe speech',
-                    input = str(pathlib.Path().absolute()) + '\\upload_folder\\' + create_file,
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
 
-                user.time_left = (user.time_left-duration)
+                user.words_left = (user.words_left-total_words)
                 db.session.commit()
                 print("Upload Successful!")
         elif(user.membership=='Institutional'):
@@ -208,13 +204,13 @@ def upload():
                 act = Activity(
                     time = datetime.utcnow(),
                     activity = 'transcribe speech',
-                    input = str(pathlib.Path().absolute()) + '\\upload_folder\\' + create_file,
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
 
-                user.time_left = (user.time_left-duration)
+                user.words_left = (user.words_left-total_words)
                 db.session.commit()
 
                 print("Upload Successful!")
@@ -226,32 +222,29 @@ def upload():
                 act = Activity(
                     time = datetime.utcnow(),
                     activity = 'transcribe speech',
-                    input = str(pathlib.Path().absolute()) + '\\upload_folder\\' + create_file,
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
                 
-                user.time_left = (user.time_left-duration)
+                user.words_left = (user.words_left-total_words)
                 db.session.commit()
 
                 print("Upload Successful!")
-                return success.return_response(message='Successfully Completed', status=200)
-
     else:
         print("Try Again!")   
 
-@login_required
 @users.route('/tts', methods=['GET', 'POST'])
 def check():
-    user = User.query.get(current_user.get_id())
+    user = User.query.get(current_user.id)
     if request.method == 'POST':
         text1 = request.form['textinput']
         my_path = str(pathlib.Path().absolute()) + '\\upload_folder'
         list = os.listdir(my_path) # dir
         number_files = len(list)
         number_files = str(number_files+1)
-        create_file = "upload_folder/file_"+str(current_user.id)+number_files+".txt"
+        create_file = "upload_folder/file_"+str(user.id)+number_files+".txt"
 
         print("Hiiii" + create_file)
         print(my_path)
@@ -265,7 +258,7 @@ def check():
         #if current user is a member then redirect to the page else redirect to payment page
         if(user.membership=="Individual"):
             #if member : individual
-            if(total_words<=current_user.words_left):
+            if(total_words<=user.words_left):
 
                 act = Activity(
                     time = datetime.utcnow(),
@@ -282,9 +275,9 @@ def check():
                 return render_template('tts.html', input_text=text1)
             else:
                 return redirect(url_for('users.subscribe'))
-        elif(current_user.membership=="Institutional"):
+        elif(user.membership=="Institutional"):
             #if member : institutional
-            if(total_words<=current_user.words_left):
+            if(total_words<=user.words_left):
                 #API call tts
 
                 act = Activity(
@@ -303,7 +296,7 @@ def check():
             else:
                 return redirect(url_for('users.subscribe'))
         else:
-            if(total_words<=current_user.words_left):
+            if(total_words<=user.words_left):
                 #API call tts
 
                 act = Activity(
@@ -340,6 +333,7 @@ def charge_individual():
             cancel_url = domainUrl + "cancelled",
             payment_method_types = ['card'],
             mode = "payment",
+            customer_email = current_user.email,
             line_items = [
                 {
                     "name": "Test Payment",
@@ -364,6 +358,7 @@ def charge_institutional():
             cancel_url = domainUrl + "cancelled",
             payment_method_types = ['card'],
             mode = "payment",
+            customer_email = current_user.email,
             line_items = [
                 {
                     "name": "Test Payment",
@@ -381,29 +376,69 @@ def charge_institutional():
 
 @users.route('/success',methods=['GET'])
 def success():
-    user = User.query.get(current_user.get_id())
+    user = User.query.get(current_user.id)
+    print(type(user))
     session = stripe.checkout.Session.retrieve(session_id)
-    mtype = ""
     amount = 0
+    time = datetime.now()
     if session["amount_total"] == 100000:
-        mtype = "Individual Subscription"
         user.membership = 'Individual'
         user.time_left = 120
         user.words_left = 2000
+        user.subscription_time = time
         amount = 1000
     if session["amount_total"] == 500000:
-        mtype = "Institutional Subscription"
         user.membership = 'Institutional'
+        user.subscription_time = time
         user.time_left = 600
         user.words_left = 5000
         amount = 5000
 
-    time = datetime.now()
     db.session.commit()
-    return render_template('success.html',user=user,session=session,time=time,mtype=mtype,amount=amount)
+    return render_template('success.html',user=user,session=session,time=time,amount=amount)
 
 @users.route('/cancelled')
 def cancelled():
     return render_template('failed.html')
 
+@users.route('/activity')
+def activity():
+    page = request.args.get('page',1,type=int)
+    acts = Activity.query.filter_by(user_id=current_user.id).paginate(page=page,per_page=5)
+    return render_template('activity.html',acts=acts)
+
+@users.route('/settings')
+def settings():
+    return render_template('settings.html')
+
+@users.route('/about',methods=['GET','POST'])
+def about():
+    success = False
+    form = UpdateInfo()
+    user = User.query.get(current_user.id)
+    if form.validate_on_submit():
+        user.name = form.name.data
+        user.number = form.number.data
+        db.session.commit()
+        success = True
+    if request.method == 'GET':
+        form.name.data = user.name
+        form.number.data = user.number
+    return render_template('about.html',form=form,success=success)
     
+@users.route('/password',methods=['GET','POST'])
+def password():
+    success = False
+    incorrect = False
+    form = ChangePassword()
+    user = User.query.get(current_user.id)
+    if form.validate_on_submit():
+        if user.check_password(form.current_password.data):
+            user.set_password(form.new_password.data)
+            db.session.commit()
+            incorrect = False
+            success = True
+        else:
+            incorrect = True
+            success = False
+    return render_template('password.html',form=form,success=success,incorrect=incorrect)

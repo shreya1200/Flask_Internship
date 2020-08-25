@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+  {% if acts.items %}
+    {% for act in acts.items %}
+      <div class="accordion" id="accordionExample">
+        <div class="card" style="background-color:black;">
+            <div class="card-header" id="headingOne">
+              <h6 class="mb-0" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne">
+                Title
+              </h6>
+            </div>
+
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+              <div class="card-body bg-light">
+                  <li>Actual Text or file</li>
+                  <li>No. of words / duration</li>
+                  <li>Date and time</li>
+              </div>
+            </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+  <h3 class="mt-4 ml-4">No previous activity</h3>
+  {% endif %}
+{% endblock %}

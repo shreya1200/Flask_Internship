@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h3 class="display-4">Text-To-Speech</h3>
+    <h4>Text-To-Speech</h4>
     <form action="{{ url_for('users.check') }}" method="POST">
         
         <textarea style='resize:none;' rows=10 cols=20 class="form-control" name="textinput" placeholder="Enter Text Here">{{input_text}}</textarea>

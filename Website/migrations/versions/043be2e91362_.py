@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 0a93a275b109
+Revision ID: 043be2e91362
 Revises: 
-Create Date: 2020-08-12 20:09:25.619286
+Create Date: 2020-08-25 15:42:45.471548
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0a93a275b109'
+revision = '043be2e91362'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,18 +30,19 @@ def upgrade():
     sa.Column('name', sa.String(length=50), nullable=True),
     sa.Column('number', sa.Integer(), nullable=True),
     sa.Column('membership', sa.String(length=50), nullable=True),
-    sa.Column('subscription_validity', sa.Integer(), nullable=True),
+    sa.Column('subscription_time', sa.DateTime(), nullable=True),
     sa.Column('email', sa.String(length=50), nullable=True),
     sa.Column('password_hash', sa.String(length=200), nullable=True),
     sa.Column('time_left', sa.Integer(), nullable=True),
     sa.Column('words_left', sa.Integer(), nullable=True),
+    sa.Column('account_type', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
     op.create_table('activity',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('time', sa.Date(), nullable=True),
+    sa.Column('time', sa.DateTime(), nullable=True),
     sa.Column('activity', sa.String(length=200), nullable=True),
     sa.Column('input', sa.String(length=200), nullable=True),
     sa.Column('output', sa.String(length=200), nullable=True),

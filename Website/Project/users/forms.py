@@ -37,4 +37,16 @@ class PasswordResetForm(FlaskForm):
     confirm_password = PasswordField("Confirm new Password",[DataRequired()])
     submit = SubmitField("Continue")
 
+class UpdateInfo(FlaskForm):
+    name = StringField("Name",[DataRequired("Name is required")])
+    number = StringField("Number",[DataRequired("Phone number is required"),Length(min=10,max=10,message="Invalid phone number")])
+    submit = SubmitField("Apply Changes")
+    
+class ChangePassword(FlaskForm):
+    current_password = PasswordField("Enter current password",[DataRequired()])
+    new_password = PasswordField("Enter new Password",[DataRequired(),EqualTo('confirm_new_password')])
+    confirm_new_password = PasswordField("Confirm new Password",[DataRequired()])
+    submit = SubmitField("Change Password")
+ 
+
 

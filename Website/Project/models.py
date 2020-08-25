@@ -19,11 +19,12 @@ class User(db.Model,UserMixin):
     name = db.Column(db.String(50))
     number = db.Column(db.Integer())
     membership = db.Column(db.String(50))
-    subscription_validity = db.Column(db.Integer())
+    subscription_time = db.Column(db.DateTime())
     email = db.Column(db.String(50),unique=True,index=True)
     password_hash = db.Column(db.String(200))
     time_left = db.Column(db.Integer())
     words_left = db.Column(db.Integer())
+    account_type = db.Column(db.String())
 
     def set_password(self,password):
         self.password_hash = generate_password_hash(password,method='sha256')
@@ -31,15 +32,16 @@ class User(db.Model,UserMixin):
     def check_password(self,password):
         return check_password_hash(self.password_hash,password)
 
-    def __init__(self,name,number,email,password,membership,subscription_validity,time_left,words_left):
+    def __init__(self,name,number,email,password,time_left,words_left):
         self.name = name
         self.number = number
         self.email = email
         self.password_hash = generate_password_hash(password)
-        self.membership = membership
-        self.subscription_validity = subscription_validity
+        self.membership = 'FREE'
+        self.subscription_time = datetime.now()
         self.time_left = time_left
         self.words_left = words_left
+        self.account_type = "user"
 
     # def __repr__(self):
     #     return '<User {}>'.format(self.username)
@@ -74,14 +76,13 @@ class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("User", backref=backref("users", uselist=False))
-    
-    time = db.Column(db.Date)
+    time = db.Column(db.DateTime())
     activity = db.Column(db.String(200))
     input = db.Column(db.String(200))
     output = db.Column(db.String(200))
 
-    def __init__(self,time,activity,input,output):
-        self.time = time
+    def __init__(self,activity,input,output):
+        self.time = datetimenow()
         self.activity = activity
         self.input = input
         self.output = output
