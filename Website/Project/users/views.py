@@ -59,6 +59,8 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(password=form.password.data):
             login_user(user) 
+            global uid
+            uid = current_user.id
             if user.account_type == 'admin':
                 return redirect('/admin')
             else:
@@ -376,7 +378,7 @@ def charge_institutional():
 
 @users.route('/success',methods=['GET'])
 def success():
-    user = User.query.get()
+    user = User.query.get(uid)
     print(type(user))
     session = stripe.checkout.Session.retrieve(session_id)
     amount = 0
