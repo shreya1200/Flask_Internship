@@ -344,7 +344,7 @@ def check():
         list = os.listdir(my_path) # dir
         number_files = len(list)
         number_files = str(number_files+1)
-        create_file = "\\file_"+str(user.id)+number_files+".txt"
+        create_file = "\\files_"+str(user.id)+number_files+".txt"
 
         print("Hiiii" + create_file)
         print(my_path)
