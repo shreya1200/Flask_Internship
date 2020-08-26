@@ -15,7 +15,7 @@ class RegisterForm(FlaskForm):
     name = StringField("First Name",[DataRequired("Name is required")])
     email = StringField("E-mail",[DataRequired("Email is required"),Email("Please enter a valid email")])
     number = StringField("number",[DataRequired("Phone number is required"),Length(min=10,max=10,message="Invalid phone number")])
-    password = PasswordField("Password",[DataRequired("Password cannot be empty"),Length(min=6, message='Select a stronger password.'),EqualTo('confirm_password', message='Passwords must match.')])
+    password = PasswordField("Password",[DataRequired("Password cannot be empty"),Length(min=6, message='Password too short'),EqualTo('confirm_password', message="Passwords don't match.")])
     confirm_password = PasswordField("Confirm Password",[DataRequired("Please re-enter password")])
     submit = SubmitField("Register")
 
@@ -33,7 +33,7 @@ class ResetRequestForm(FlaskForm):
             raise ValidationError("Email not registered.")
 
 class PasswordResetForm(FlaskForm):
-    password = PasswordField("Enter new Password",[DataRequired(),EqualTo('confirm_password')])
+    password = PasswordField("Enter new Password",[DataRequired(),EqualTo('confirm_password',message="Passwords don't match")])
     confirm_password = PasswordField("Confirm new Password",[DataRequired()])
     submit = SubmitField("Continue")
 
@@ -44,7 +44,7 @@ class UpdateInfo(FlaskForm):
     
 class ChangePassword(FlaskForm):
     current_password = PasswordField("Enter current password",[DataRequired()])
-    new_password = PasswordField("Enter new Password",[DataRequired(),EqualTo('confirm_new_password')])
+    new_password = PasswordField("Enter new Password",[DataRequired(),EqualTo('confirm_new_password',message="Passwords don't match"),Length(min=6,message="Password too short")])
     confirm_new_password = PasswordField("Confirm new Password",[DataRequired()])
     submit = SubmitField("Change Password")
  

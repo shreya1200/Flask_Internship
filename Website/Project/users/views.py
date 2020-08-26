@@ -14,7 +14,6 @@ import stripe
 from datetime import datetime,timedelta
 import pathlib
 
-
 users = Blueprint('users',__name__)
  
 public = "pk_test_51HCJdAAB0pdFbVf1g2Lpev1JuHAkKSTLnJZWAJNvjcWFKXd806BRonbAilLwjMWikccDHPD67Sd1Olk9HTSbPxfK00iwPffxJP"
@@ -40,6 +39,8 @@ def register():
         db.session.commit()  # Create new user
         print ('user added successfully')
         login_user(user)  # Log in as newly created user
+        global userid
+        userid = current_user.id
         next = request.args.get('next')
         if next == None or not next[0] == '/':
             next = url_for('users.index')
@@ -59,8 +60,8 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(password=form.password.data):
             login_user(user) 
-            global uid
-            uid = current_user.id
+            global userid
+            userid = current_user.id
             if user.account_type == 'admin':
                 return redirect('/admin')
             else:
@@ -95,7 +96,11 @@ def logout():
 
 @users.route('/welcome')
 def index():
-    user = User.query.get(current_user.id)
+    try:
+        user = User.query.get(userid)
+    except:
+        logout_user()
+        return redirect(url_for('users.login'))
     time = datetime.now()
     if (time - user.subscription_time) > timedelta(days=30):
         user.membership = 'FREE'
@@ -110,12 +115,12 @@ def tts():
 
 @users.route('/transcribe')
 def transcribe():
-    return render_template('transcribe.html')
+    return render_template('transcribe.html',error=False)
 
 
 @users.route('/emotions')
 def emotions():
-    return render_template('emotions.html')
+    return render_template('emotions.html',error=False)
 
 def send_reset_mail(user):
     token = user.get_reset_token()
@@ -162,7 +167,7 @@ def upload():
         mylist = os.listdir(my_path) # dir
         number_files = len(mylist)
         number_files = str(number_files+1)
-        filename = "audio_" + str(current_user.id)+number_files + "_" + file.filename 
+        filename = "\\audio_" + str(userid)+number_files + "_" + file.filename 
         create_file = filename
 
         print("Hiiii" + create_file)
@@ -170,9 +175,9 @@ def upload():
 
 
         #file.save(my_path, secure_filename(filename))
-        file.save("/upload_folder/", secure_filename(filename))
+        
         a,b = os.path.splitext(filename)
-        user = User.query.get(current_user.id)
+        user = User.query.get(userid)
         if(b=='.mp3'):
             audio = MP3(file)
             duration = (audio.info.length)/60   #in mins
@@ -195,9 +200,12 @@ def upload():
                 db.session.add(act)
                 db.session.commit()
 
-                user.words_left = (user.words_left-total_words)
+                user.time_left = (user.time_left-duration)
                 db.session.commit()
+                file.save(os.path.join(my_path, secure_filename(filename)))
                 print("Upload Successful!")
+                return render_template('transcribe.html',error=False)
+
         elif(user.membership=='Institutional'):
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
@@ -212,10 +220,11 @@ def upload():
                 db.session.add(act)
                 db.session.commit()
 
-                user.words_left = (user.words_left-total_words)
+                user.time_left = (user.time_left-duration)
                 db.session.commit()
-
+                file.save(os.path.join(my_path, secure_filename(filename)))
                 print("Upload Successful!")
+                return render_template('transcribe.html',error=False)
         else:
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
@@ -230,23 +239,116 @@ def upload():
                 db.session.add(act)
                 db.session.commit()
                 
-                user.words_left = (user.words_left-total_words)
+                user.time_left = (user.time_left-duration)
+                db.session.commit()
+                file.save(os.path.join(my_path, secure_filename(filename)))
+                print("Upload Successful!")
+                return render_template('transcribe.html',error=False)
+    else:
+        print("Try Again!")
+        return render_template('transcribe.html',error=True)
+
+
+@users.route('/uploademo',methods=['POST'])
+def uploademo():    
+    if request.method == 'POST':
+        file = request.files['myFile']
+        my_path = str(pathlib.Path().absolute()) + '\\upload_folder'
+
+        mylist = os.listdir(my_path) # dir
+        number_files = len(mylist)
+        number_files = str(number_files+1)
+        filename = "\\audio_" + str(userid)+number_files + "_" + file.filename 
+        create_file = filename
+
+        print("Hiiii" + create_file)
+        print(my_path)
+
+
+        #file.save(my_path, secure_filename(filename))
+        
+        a,b = os.path.splitext(filename)
+        user = User.query.get(userid)
+        if(b=='.mp3'):
+            audio = MP3(file)
+            duration = (audio.info.length)/60   #in mins
+        else:
+            f = sf.SoundFile(file)
+            duration = (len(f)/f.samplerate)/60 #in mins
+        
+        if(user.membership=='Individual'):
+            if(duration>user.time_left):
+                return redirect(url_for('users.subscribe'))
+            else:
+                #API call transcribe speech
+                
+                act = Activity(
+                    time = datetime.utcnow(),
+                    activity = 'emotion',
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    output = 'hi'
+                )
+                db.session.add(act)
                 db.session.commit()
 
+                user.time_left = (user.time_left-duration)
+                db.session.commit()
+                file.save(os.path.join(my_path, secure_filename(filename)))
                 print("Upload Successful!")
+                return render_template('emotions.html',error=False)
+
+        elif(user.membership=='Institutional'):
+            if(duration>user.time_left):
+                return redirect(url_for('users.subscribe'))
+            else:
+                #API call transcribe speech
+                act = Activity(
+                    time = datetime.utcnow(),
+                    activity = 'emotion',
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    output = 'hi'
+                )
+                db.session.add(act)
+                db.session.commit()
+
+                user.time_left = (user.time_left-duration)
+                db.session.commit()
+                file.save(os.path.join(my_path, secure_filename(filename)))
+                print("Upload Successful!")
+                return render_template('emotions.html',error=False)
+        else:
+            if(duration>user.time_left):
+                return redirect(url_for('users.subscribe'))
+            else:
+                #API call transcribe speech
+                act = Activity(
+                    time = datetime.utcnow(),
+                    activity = 'emotion',
+                    input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
+                    output = 'hi'
+                )
+                db.session.add(act)
+                db.session.commit()
+                
+                user.time_left = (user.time_left-duration)
+                db.session.commit()
+                file.save(os.path.join(my_path, secure_filename(filename)))
+                print("Upload Successful!")
+                return render_template('emotions.html',error=False)
     else:
-        print("Try Again!")   
+        print("Try Again!")
+        return render_template('emotions.html',error=True)   
 
 @users.route('/tts', methods=['GET', 'POST'])
 def check():
-    user = User.query.get(current_user.id)
+    user = User.query.get(userid)
     if request.method == 'POST':
         text1 = request.form['textinput']
         my_path = str(pathlib.Path().absolute()) + '\\upload_folder'
         list = os.listdir(my_path) # dir
         number_files = len(list)
         number_files = str(number_files+1)
-        create_file = "upload_folder/file_"+str(user.id)+number_files+".txt"
+        create_file = "\\files_"+str(user.id)+number_files+".txt"
 
         print("Hiiii" + create_file)
         print(my_path)
@@ -378,7 +480,7 @@ def charge_institutional():
 
 @users.route('/success',methods=['GET'])
 def success():
-    user = User.query.get(uid)
+    user = User.query.get(userid)
     login_user(user)
     print(type(user))
     session = stripe.checkout.Session.retrieve(session_id)
@@ -406,8 +508,7 @@ def cancelled():
 
 @users.route('/activity')
 def activity():
-    page = request.args.get('page',1,type=int)
-    acts = Activity.query.filter_by(user_id=current_user.id).paginate(page=page,per_page=5)
+    acts = []
     return render_template('activity.html',acts=acts)
 
 @users.route('/settings')
@@ -418,7 +519,7 @@ def settings():
 def about():
     success = False
     form = UpdateInfo()
-    user = User.query.get(current_user.id)
+    user = User.query.get(userid)
     if form.validate_on_submit():
         user.name = form.name.data
         user.number = form.number.data
@@ -434,7 +535,7 @@ def password():
     success = False
     incorrect = False
     form = ChangePassword()
-    user = User.query.get(current_user.id)
+    user = User.query.get(userid)
     if form.validate_on_submit():
         if user.check_password(form.current_password.data):
             user.set_password(form.new_password.data)

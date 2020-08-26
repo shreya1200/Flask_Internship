@@ -1,14 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 <h4>Emotion-Detection</h4>
-    <div>
+
+{% if error %}
+<br>    
+<div class="alert alert-danger" style="width: 18rem;">
+      
+      <h5 style="color: red;">Error Uploading File!</h5>
+        
+    </div>
+    {% endif %}
+
+<div>
         <br><br>
         <label for="token_id">Token ID</label>
         <input type="text" id='token_id'>
     </div>
     <br><br>
     <div>
-      <form method="POST" action="upload" enctype=multipart/form-data>
+      <form method="POST" action="uploademo" enctype=multipart/form-data>
         <input type="file" name="myFile" id="myFile">
         <button class="btn btn-primary"><span class="fas fa-upload col-md-2"></span> Upload the file</button>
     </form>
