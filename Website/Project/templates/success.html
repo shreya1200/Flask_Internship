@@ -17,8 +17,8 @@
             <ul class="list-group" style="border:2px solid #345bcb;">
                 <li class="list-group-item listitem" style="border-radius:0;border-bottom: 1px solid #345bcb;color:white;background-color:#345bcb ;">Transaction Summary: </li>
                 <li class="list-group-item listitem">Ref Id: <span style="float:right;word-wrap:break-word;min-width:auto;max-width:20rem;">{{session["id"]}}</span></li>
-                <li class="list-group-item listitem">Date: <span style="float:right;">{{time.day}}/{{time.month}}/{{time.year}}</span></li>
-                <li class="list-group-item listitem">Time: <span style="float:right;">{{time.hour}}:{{time.minute}}</span></li>
+                <li class="list-group-item listitem">Date: <span style="float:right;">{{time.strftime('%d-%m-%Y')}}</span></li>
+                <li class="list-group-item listitem">Time: <span style="float:right;">{{time.strftime('%H:%M %p')}}</span></li>
             </ul>
             <ul class="list-group" style="border:2px solid #345bcb;">
                 <li class="list-group-item listitem" style="border-radius:0;border-bottom: 1px solid #345bcb;color:white;background-color:#345bcb ;">Order Summary: </li>

@@ -189,18 +189,19 @@ def upload():
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
-                #API call transcribe speech
+                #API call Speech Transcription
                 
                 act = Activity(
-                    time = datetime.utcnow(),
-                    activity = 'transcribe speech',
+                    time = datetime.now(),
+                    activity = 'Speech Transcription',
+                    user_id = userid,
                     input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
 
-                user.time_left = (user.time_left-duration)
+                user.time_left = round(user.time_left-duration,2)
                 db.session.commit()
                 file.save(os.path.join(my_path, secure_filename(filename)))
                 print("Upload Successful!")
@@ -210,17 +211,18 @@ def upload():
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
-                #API call transcribe speech
+                #API call Speech Transcription
                 act = Activity(
-                    time = datetime.utcnow(),
-                    activity = 'transcribe speech',
+                    time = datetime.now(),
+                    activity = 'Speech Transcription',
+                    user_id = userid,
                     input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
 
-                user.time_left = (user.time_left-duration)
+                user.time_left = round(user.time_left-duration,2)
                 db.session.commit()
                 file.save(os.path.join(my_path, secure_filename(filename)))
                 print("Upload Successful!")
@@ -229,17 +231,18 @@ def upload():
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
-                #API call transcribe speech
+                #API call Speech Transcription
                 act = Activity(
-                    time = datetime.utcnow(),
-                    activity = 'transcribe speech',
+                    time = datetime.now(),
+                    activity = 'Speech Transcription',
+                    user_id = userid,
                     input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
                 
-                user.time_left = (user.time_left-duration)
+                user.time_left = round(user.time_left-duration,2)
                 db.session.commit()
                 file.save(os.path.join(my_path, secure_filename(filename)))
                 print("Upload Successful!")
@@ -280,18 +283,19 @@ def uploademo():
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
-                #API call transcribe speech
+                #API call Speech Transcription
                 
                 act = Activity(
-                    time = datetime.utcnow(),
-                    activity = 'emotion',
+                    time = datetime.now(),
+                    activity = 'Emotion Detection',
+                    user_id = userid,
                     input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
 
-                user.time_left = (user.time_left-duration)
+                user.time_left = round(user.time_left-duration,2)
                 db.session.commit()
                 file.save(os.path.join(my_path, secure_filename(filename)))
                 print("Upload Successful!")
@@ -301,17 +305,18 @@ def uploademo():
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
-                #API call transcribe speech
+                #API call Speech Transcription
                 act = Activity(
-                    time = datetime.utcnow(),
-                    activity = 'emotion',
+                    time = datetime.now(),
+                    activity = 'Emotion Detection',
+                    user_id = userid,
                     input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
 
-                user.time_left = (user.time_left-duration)
+                user.time_left = round(user.time_left-duration,2)
                 db.session.commit()
                 file.save(os.path.join(my_path, secure_filename(filename)))
                 print("Upload Successful!")
@@ -320,17 +325,18 @@ def uploademo():
             if(duration>user.time_left):
                 return redirect(url_for('users.subscribe'))
             else:
-                #API call transcribe speech
+                #API call Speech Transcription
                 act = Activity(
-                    time = datetime.utcnow(),
-                    activity = 'emotion',
+                    time = datetime.now(),
+                    activity = 'Emotion Detection',
+                    user_id = userid,
                     input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
                 db.session.add(act)
                 db.session.commit()
                 
-                user.time_left = (user.time_left-duration)
+                user.time_left = round(user.time_left-duration,2)
                 db.session.commit()
                 file.save(os.path.join(my_path, secure_filename(filename)))
                 print("Upload Successful!")
@@ -347,13 +353,14 @@ def check():
         my_path = str(pathlib.Path().absolute()) + '\\upload_folder'
         list = os.listdir(my_path) # dir
         number_files = len(list)
+        print(number_files)
         number_files = str(number_files+1)
         create_file = "\\files_"+str(user.id)+number_files+".txt"
 
         print("Hiiii" + create_file)
         print(my_path)
         
-        f = open(create_file, "x")
+        f = open(my_path+create_file, "x")
         f.write(text1)
         f.close()
 
@@ -365,8 +372,9 @@ def check():
             if(total_words<=user.words_left):
 
                 act = Activity(
-                    time = datetime.utcnow(),
-                    activity = 'text to speech',
+                    time = datetime.now(),
+                    user_id = userid,
+                    activity = 'Text-to-Speech',
                     input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
@@ -385,8 +393,9 @@ def check():
                 #API call tts
 
                 act = Activity(
-                    time = datetime.utcnow(),
-                    activity = 'text to speech',
+                    time = datetime.now(),
+                    user_id = userid,
+                    activity = 'Text-to-Speech',
                     input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
@@ -404,8 +413,9 @@ def check():
                 #API call tts
 
                 act = Activity(
-                    time = datetime.utcnow(),
-                    activity = 'text to speech',
+                    time = datetime.now(),
+                    user_id = userid, 
+                    activity = 'Text-to-Speech',
                     input = str(pathlib.Path().absolute()) + '\\upload_folder' + create_file,
                     output = 'hi'
                 )
@@ -508,7 +518,9 @@ def cancelled():
 
 @users.route('/activity')
 def activity():
-    acts = []
+    acts = Activity.query.filter_by(user_id=userid).all()
+    for act in acts:
+        print(act.activity)
     return render_template('activity.html',acts=acts)
 
 @users.route('/settings')

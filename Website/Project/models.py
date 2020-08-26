@@ -81,7 +81,8 @@ class Activity(db.Model):
     input = db.Column(db.String(200))
     output = db.Column(db.String(200))
 
-    def __init__(self,time,activity,input,output):
+    def __init__(self,user_id,time,activity,input,output):
+        self.user_id = user_id
         self.time = time
         self.activity = activity
         self.input = input
