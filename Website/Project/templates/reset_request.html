@@ -25,7 +25,8 @@
     <header style="height:50rem;background:url('/static/assets/img/tech2.jpg')no-repeat center center;background-size:cover;">
         <div class="overlay"></div>
         <div class="container text-white text-center">
-            <form class="row">
+            <form class="row" method="POST">
+                {{form.hidden_tag()}}
                 <div class="col-xl-9 mx-auto text-light mt-5">
                     <h1>Reset Password</h1>
                 </div>
@@ -41,7 +42,9 @@
             </form>
             {% with message = (get_flashed_messages())[0] %}
                 {% if message %}
-                    <div class="alert alert-success">message</div>
+                    <div class="col-md-10 col-lg-8 col-xl-7 mx-auto mt-4">
+                        <p style="color:greenyellow">Instructions to change password have been sent to your email. You can close this window</p>
+                    </div>
                 {% endif %}
             {% endwith %}
         </div>
