@@ -4,7 +4,6 @@ from wtforms.validators import DataRequired,Email,EqualTo,Length
 from wtforms import ValidationError
 from flask_login import current_user
 from Project.models import User
-import email_validator
 
 class LoginForm(FlaskForm):
     email = StringField('email',[DataRequired('Email is required')])
