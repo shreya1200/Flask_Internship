@@ -24,8 +24,6 @@ stripe.api_key = secret
 @users.route('/register',methods=['GET','POST'])
 def register():
     form = RegisterForm()
-    # GET requests serve sign-up page.
-    # POST requests validate form & user creation.
     if form.validate_on_submit(): #takes the information only when the all the validators are satisfied on submit
         user = User(
             name=form.name.data, 
@@ -50,8 +48,6 @@ def register():
 
 @users.route('/login',methods=['GET','POST'])
 def login():
-    # if user is logged in after sign up
-    # print(current_user)
     if current_user.is_authenticated:
         return redirect(url_for('users.index'))
         
@@ -66,10 +62,6 @@ def login():
                 return redirect('/admin')
             else:
                 return redirect(url_for('users.index'))
-                
-                #return render_template('/admin')
-
-           # return redirect(url_for('users.index'))
         else:
             flash('Incorrect email or password.')
     return render_template('login.html',form=form)
